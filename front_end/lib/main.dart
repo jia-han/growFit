@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     const providerConfigs = [EmailProviderConfiguration()];
 
     return MaterialApp(
-      initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
+      initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-inn' : '/profile',
       routes: {
         '/sign-in': (context) {
           return SignInScreen(
