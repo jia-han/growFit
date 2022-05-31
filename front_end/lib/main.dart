@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:front_end/screens/Home.dart';
 
 
 void main() async {
@@ -21,19 +22,11 @@ class MyApp extends StatelessWidget {
     const providerConfigs = [EmailProviderConfiguration()];
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/profile',
       routes: {
         '/sign-in': (context) {
           return SignInScreen(
-            headerBuilder: (context, constraints, _) {
-              return Padding(
-                padding: const EdgeInsets.all(20),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.network('https://c.tenor.com/rz4kOurhQ0QAAAAd/big-mouth-cat.gif')
-                ),
-              );
-            },
             providerConfigs: providerConfigs,
             actions: [
               AuthStateChangeAction<SignedIn>((context, state) {
@@ -43,14 +36,7 @@ class MyApp extends StatelessWidget {
           );
         },
         '/profile': (context) {
-          return ProfileScreen(
-            providerConfigs: providerConfigs,
-            actions: [
-              SignedOutAction((context) {
-                Navigator.pushReplacementNamed(context, '/sign-in');
-              }),
-            ],
-          );
+          return const Home();
         },
       },
     );
