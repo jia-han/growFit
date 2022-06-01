@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "213386640711",
+    "project_id": "growfit-dbcb0",
+    "storage_bucket": "growfit-dbcb0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213386640711:android:78104fe346394824aba062",
+        "android_client_info": {
+          "package_name": "com.example.front_end"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "213386640711-99hb5kjlmufs554c98msnhfb2fbqvh1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7B0eL1QYB1SCMTv7NU5TE8pW6hk8pYTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "213386640711-99hb5kjlmufs554c98msnhfb2fbqvh1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "213386640711-hnkpj8mg2ctrd9575ba3pmd8bh9gh5ds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.frontEnd"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
