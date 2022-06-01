@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:front_end/screens/Shop.dart';
 
 
 class Home extends StatelessWidget {
@@ -22,7 +23,7 @@ class Home extends StatelessWidget {
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(icon: Image.asset('assets/images/shop_icon.png', width: 24, height: 24), label: 'shop'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Shop()));},), label: 'shop'),
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
             BottomNavigationBarItem(icon: Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), label: 'gallery')
         ],
@@ -36,7 +37,7 @@ Future<void> selectHealth(BuildContext context) async {
   await showDialog(context: context, builder: (context) {
     return AlertDialog(
       title: Align(alignment: Alignment.center, child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
-      content: Column(children: [Text('Steps Taken: '), Text('Time Exercised: ')],),
+      content: Column(children: [Text('Steps Taken: '), Text('Time Exercised: ')], mainAxisSize: MainAxisSize.min,),
       actions: <Widget>[TextButton(child: Text('Back'), onPressed: () { Navigator.of(context).pop();},)],
     );
   });
