@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/screens/Shop.dart';
+import 'package:front_end/screens/Gallery.dart';
 
 
 class Home extends StatelessWidget {
@@ -23,11 +24,12 @@ class Home extends StatelessWidget {
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Shop()));},), label: 'shop'),
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-            BottomNavigationBarItem(icon: Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), label: 'gallery')
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop()));},), label: 'shop'),
+            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));},), label: 'home'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery()));},), label: 'gallery'),
         ],
-        )
+        ),
+        body: Container(child: Align(alignment: Alignment.center,child: Image.asset('assets/images/pet.png'))),
         ),
     );
   }
