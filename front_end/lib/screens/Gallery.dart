@@ -16,6 +16,7 @@ class Gallery extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
         home: Scaffold(
+            backgroundColor: Colors.yellow[100],
           appBar: AppBar(
             leading: IconButton(icon: Image.asset('assets/images/health.png'), onPressed: () => selectHealth(context) ),
             backgroundColor: Colors.brown, 
@@ -23,7 +24,7 @@ class Gallery extends StatelessWidget {
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('0')),
+              Align(alignment: Alignment.center, child: Text('$treatCount')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(
@@ -32,7 +33,39 @@ class Gallery extends StatelessWidget {
             BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home, color: Colors.amber[800]), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money)));},), label: 'home'),
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money)));},), label: 'gallery'),
         ],
-        )
+        ),
+          body: Center(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 100),
+                Container(height: 300, width: 250, color: Colors.brown[200],
+                child: Column(
+                  children: <Widget>[Image.asset('assets/images/pet.png'),
+                  Text('26/09/22', style: TextStyle(fontSize: 30),),
+                  Text('Steps taken:', style: TextStyle(fontSize: 30),),
+                  ]
+
+                )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.arrow_left, size: 100),
+                        color: Colors.brown,
+                        onPressed: () {}),
+                    IconButton(icon: Icon(Icons.share, size: 50),
+                        color: Colors.brown,
+                        onPressed: () {}),
+                    IconButton(icon: Icon(Icons.arrow_right, size: 100),
+                        color: Colors.brown,
+                        onPressed: () {}),
+                  ]
+                )
+
+              ]
+            ),
+          )
         ),
     );
   }

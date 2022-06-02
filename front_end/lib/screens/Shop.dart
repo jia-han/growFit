@@ -21,6 +21,7 @@ class _ShopState extends State<Shop> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.yellow[100],
         appBar: AppBar(
             leading: IconButton(icon: Image.asset('assets/images/health.png'), onPressed: () => selectHealth(context) ),
             backgroundColor: Colors.brown, 
@@ -28,7 +29,7 @@ class _ShopState extends State<Shop> {
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('0')),
+              Align(alignment: Alignment.center, child: Text('$treatCount')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(

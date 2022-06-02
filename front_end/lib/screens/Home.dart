@@ -6,6 +6,7 @@ import 'package:front_end/screens/Gallery.dart';
 
 class Home extends StatefulWidget {
   final int treatCount;
+
   final int money;
   const Home({Key? key, required this.treatCount, required this.money}) : super(key: key);
 
@@ -23,14 +24,15 @@ class _HomeState extends State<Home> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
         home: Scaffold(
+          backgroundColor: Colors.yellow[100],
           appBar: AppBar(
             leading: IconButton(icon: Image.asset('assets/images/health.png'), onPressed: () => selectHealth(context) ),
-            backgroundColor: Colors.brown, 
+            backgroundColor: Colors.brown,
             actions:<Widget>[
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('0')),
+              Align(alignment: Alignment.center, child: Text('$treatCount')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(
@@ -49,6 +51,7 @@ class _HomeState extends State<Home> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  // FlatButton is depreciated
                   TextButton( onPressed: () {
                     setState(() {
                       treatCount--;
