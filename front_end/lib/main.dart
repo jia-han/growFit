@@ -36,11 +36,7 @@ class MyApp extends StatelessWidget {
           );
         },
         '/profile': (context) {
-<<<<<<< Updated upstream
-          return const Home();
-=======
           return const Home(treatCount: 50, money: 500);
->>>>>>> Stashed changes
         },
       },
     );

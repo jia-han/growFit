@@ -4,10 +4,6 @@ import 'package:front_end/screens/Shop.dart';
 import 'package:front_end/screens/Gallery.dart';
 
 
-<<<<<<< Updated upstream
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
-=======
 class Home extends StatefulWidget {
   final int treatCount;
   final int money;
@@ -21,7 +17,6 @@ class _HomeState extends State<Home> {
 
   late int treatCount = widget.treatCount;
   late int money = widget.money;
->>>>>>> Stashed changes
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +35,6 @@ class _HomeState extends State<Home> {
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-<<<<<<< Updated upstream
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop()));},), label: 'shop'),
-            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));},), label: 'home'),
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery()));},), label: 'gallery'),
-        ],
-        ),
-        body: Container(child: Align(alignment: Alignment.center,child: Image.asset('assets/images/pet.png'))),
-=======
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount, money: money)));},), label: 'shop'),
             BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home, color: Colors.amber[800]), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money)));},), label: 'home'),
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money)));},), label: 'gallery'),
@@ -74,7 +61,6 @@ class _HomeState extends State<Home> {
             SizedBox(height: 30)
           ],
         ),
->>>>>>> Stashed changes
         ),
     );
   }

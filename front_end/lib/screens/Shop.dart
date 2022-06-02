@@ -3,10 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/Gallery.dart';
 
-<<<<<<< Updated upstream
-class Shop extends StatelessWidget {
-  const Shop({Key? key}) : super(key: key);
-=======
 class Shop extends StatefulWidget {
   final int treatCount;
   final int money;
@@ -19,7 +15,6 @@ class Shop extends StatefulWidget {
 class _ShopState extends State<Shop> {
     late int treatCount = widget.treatCount;
     late int money = widget.money;
->>>>>>> Stashed changes
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +33,9 @@ class _ShopState extends State<Shop> {
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-<<<<<<< Updated upstream
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop()));},), label: 'shop'),
-            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));},), label: 'home'),
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery()));},), label: 'gallery'),
-=======
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount, money: money)));},), label: 'shop'),
             BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money)));},), label: 'home'),
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money)));},), label: 'gallery'),
->>>>>>> Stashed changes
         ],
         ),
         body: Column(
