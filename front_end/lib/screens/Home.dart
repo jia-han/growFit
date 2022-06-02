@@ -6,7 +6,9 @@ import 'package:front_end/screens/Gallery.dart';
 
 class Home extends StatefulWidget {
   final int treatCount;
-  const Home({Key? key, required this.treatCount}) : super(key: key);
+
+  final int money;
+  const Home({Key? key, required this.treatCount, required this.money}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -15,6 +17,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   late int treatCount = widget.treatCount;
+  late int money = widget.money;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +30,16 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.brown,
             actions:<Widget>[
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('0')),
+              Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('$treatCount')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount,)));},), label: 'shop'),
-            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home, color: Colors.amber[800]), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount,)));},), label: 'home'),
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount,)));},), label: 'gallery'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount, money: money)));},), label: 'shop'),
+            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home, color: Colors.amber[800]), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money)));},), label: 'home'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money)));},), label: 'gallery'),
         ],
         ),
         body: Column(
@@ -48,12 +51,13 @@ class _HomeState extends State<Home> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  FlatButton( onPressed: () {
+                  // FlatButton is depreciated
+                  TextButton( onPressed: () {
                     setState(() {
                       treatCount--;
                     });
-                  }, padding: EdgeInsets.all(0)
-                  , child: Image.asset('assets/images/treat_bowl.png'))
+                  },
+                 child: Image.asset('assets/images/treat_bowl.png'))
                 ]
               ),
             ),
