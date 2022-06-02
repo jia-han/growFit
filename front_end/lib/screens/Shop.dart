@@ -3,8 +3,23 @@ import 'package:intl/intl.dart';
 import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/Gallery.dart';
 
+<<<<<<< Updated upstream
 class Shop extends StatelessWidget {
   const Shop({Key? key}) : super(key: key);
+=======
+class Shop extends StatefulWidget {
+  final int treatCount;
+  final int money;
+  const Shop({Key? key, required this.treatCount, required this.money}) : super(key: key);
+
+  @override
+  State<Shop> createState() => _ShopState();
+}
+
+class _ShopState extends State<Shop> {
+    late int treatCount = widget.treatCount;
+    late int money = widget.money;
+>>>>>>> Stashed changes
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +31,22 @@ class Shop extends StatelessWidget {
             backgroundColor: Colors.brown, 
             actions:<Widget>[
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('0')),
+              Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('0')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
+<<<<<<< Updated upstream
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop()));},), label: 'shop'),
             BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));},), label: 'home'),
             BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery()));},), label: 'gallery'),
+=======
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount, money: money)));},), label: 'shop'),
+            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money)));},), label: 'home'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money)));},), label: 'gallery'),
+>>>>>>> Stashed changes
         ],
         ),
         body: Column(
@@ -38,7 +59,10 @@ class Shop extends StatelessWidget {
                       child: Column(
                           children: <Widget>[
                             Expanded(child: Image.asset('assets/images/treatbag.png')),
-                            Text('50'),
+                            ElevatedButton(onPressed: () {setState(() {
+                              money = money - 50;
+                              treatCount++;
+                            });}, child: Text('50'),)
                           ]
                       )
                   ),
@@ -50,7 +74,9 @@ class Shop extends StatelessWidget {
                               padding: const EdgeInsets.all(20.0),
                               child: Image.asset('assets/images/ball_1.png'),
                             )),
-                            Text('50'),
+                            ElevatedButton(onPressed: () {setState(() {
+                              money = money - 50;
+                            });}, child: Text('50'),),
                           ]
                       )
                   )
@@ -66,7 +92,9 @@ class Shop extends StatelessWidget {
                               padding: const EdgeInsets.all(20.0),
                               child: Image.asset('assets/images/ball_2.png'),
                             )),
-                            Text('50'),
+                            ElevatedButton(onPressed: () {setState(() {
+                              money = money - 50;
+                            });}, child: Text('50'),),
                           ]
                       )
                   ),
@@ -79,7 +107,9 @@ class Shop extends StatelessWidget {
                               padding: const EdgeInsets.all(20.0),
                               child: Image.asset('assets/images/ball_3.png'),
                             )),
-                            Text('50'),
+                            ElevatedButton(onPressed: () {setState(() {
+                              money = money - 50;
+                            });}, child: Text('50'),),
                           ]
                       )
                   )
