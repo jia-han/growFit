@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           );
         },
         '/profile': (context) {
-          return const Home(treatCount: 50, money: 500);
+          return const Home(treatCount: 50, money: 500, priceList: ['50','50','50','50'],);
         },
       },
     );
