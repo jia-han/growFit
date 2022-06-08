@@ -21,6 +21,7 @@ class _ShopState extends State<Shop> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.yellow[100],
         appBar: AppBar(
             leading: IconButton(icon: Image.asset('assets/images/health.png'), onPressed: () => selectHealth(context) ),
             backgroundColor: Colors.brown, 
