@@ -4,6 +4,9 @@ import 'package:flutterfire_ui/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:front_end/screens/Home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+FirebaseFirestore db = FirebaseFirestore.instance;
 
 void main() async {
 
@@ -17,6 +20,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  final Route signup = 
   @override
   Widget build(BuildContext context) {
     const providerConfigs = [EmailProviderConfiguration()];
@@ -29,6 +33,9 @@ class MyApp extends StatelessWidget {
           return SignInScreen(
             providerConfigs: providerConfigs,
             actions: [
+              AuthStateChangeAction<SigningUp>((context,state) {
+                Navigator.pushReplacement(context, '');
+              }),
               AuthStateChangeAction<SignedIn>((context, state) {
                 Navigator.pushReplacementNamed(context, '/profile');
               }),
@@ -41,4 +48,5 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-    }
+}
+

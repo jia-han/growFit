@@ -28,7 +28,7 @@ class _ShopState extends State<Shop> {
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('0')),
+              Align(alignment: Alignment.center, child: Text('$treatCount')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(
@@ -48,10 +48,15 @@ class _ShopState extends State<Shop> {
                       child: Column(
                           children: <Widget>[
                             Expanded(child: Image.asset('assets/images/treatbag.png')),
-                            ElevatedButton(onPressed: () {setState(() {
+                            ElevatedButton(onPressed: () {
+                              if(money < 50) {
+                                showDialog(context: context, builder: (BuildContext context) {return AlertDialog(title: Text('Not Enough Money!'));});
+                              } else {
+                              setState(() {
                               money = money - 50;
                               treatCount++;
-                            });}, child: Text('50'),)
+                            });}}, 
+                            child: Text('50'),)
                           ]
                       )
                   ),
