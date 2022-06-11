@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/auth.dart';
+import 'package:front_end/main.dart';
+import 'package:front_end/screens/SignIn.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/screens/Shop.dart';
 import 'package:front_end/screens/Gallery.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 
 class Home extends StatefulWidget {
@@ -30,6 +35,13 @@ class _HomeState extends State<Home> {
             leading: IconButton(icon: Image.asset('assets/images/health.png'), onPressed: () => selectHealth(context) ),
             backgroundColor: Colors.brown,
             actions:<Widget>[
+              IconButton(icon: Icon(Icons.power_settings_new), onPressed: () {showDialog(context: context, builder: (context) => AlertDialog(
+                title: Text('Sign out?'),
+                actions: [
+                  //TODO: sign out button
+                  ElevatedButton(onPressed: () {signOut();}, child: Text('Sign Out'),),
+                ],
+              ));},),
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
               Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
@@ -78,4 +90,10 @@ Future<void> selectHealth(BuildContext context) async {
       actions: <Widget>[TextButton(child: Text('Back'), onPressed: () { Navigator.of(context).pop();},)],
     );
   });
+}
+
+signOut() async {
+  await FirebaseAuth.instance.signOut().then((value) {
+    runApp(new MaterialApp(home: new MyApp()));
+  },);
 }
