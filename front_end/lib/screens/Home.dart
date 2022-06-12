@@ -32,6 +32,7 @@ class _HomeState extends State<Home> {
 
   Future fetchData() async {
     final types = [
+      HealthDataType.WEIGHT,
       HealthDataType.STEPS,
     ];
 
@@ -57,6 +58,9 @@ class _HomeState extends State<Home> {
     } else {
       print ("Authorization not granted");
     }
+    _healthDataList.forEach((x) {
+      print("Data point: $x");
+    });
   }
 
   Future fetchStepData() async {
@@ -65,15 +69,21 @@ class _HomeState extends State<Home> {
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day);
 
-    bool requested = await health.requestAuthorization([HealthDataType.STEPS]);
+    bool requested = await health.requestAuthorization([HealthDataType.WEIGHT]);
 
     if (requested) {
       try {
-        steps = await health.getTotalStepsInInterval(midnight, now);
+         steps = await health.getTotalStepsInInterval(midnight, now);
+        _healthDataList = await health.getHealthDataFromTypes(midnight, now, [HealthDataType.WEIGHT]);
+
       } catch (error) {
         print("Caught exception in getTotalStepsInInterval");
       }
       print('Total number of steps: $steps');
+
+      _healthDataList.forEach((x) {
+        print("Data point: $x");
+      });
 
       setState(() {
         noOfSteps = (steps == null) ? 0 : steps;
@@ -84,6 +94,11 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  initState() {
+    fetchData();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -91,7 +106,7 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.yellow[100],
           appBar: AppBar(
             leading: IconButton(icon: Image.asset('assets/images/health.png'),
-                onPressed: () {fetchData(); fetchStepData(); selectHealth(context, noOfSteps); }),
+                onPressed: () {fetchStepData(); selectHealth(context, noOfSteps); }),
             backgroundColor: Colors.brown,
             actions:<Widget>[
               IconButton(icon: Icon(Icons.power_settings_new), onPressed: () {showDialog(context: context, builder: (context) => AlertDialog(
