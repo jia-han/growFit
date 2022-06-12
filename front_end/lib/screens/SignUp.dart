@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/SignIn.dart';
 import 'package:front_end/reusable_widgets/reusable_widgets.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 class SignUp extends StatelessWidget {
   @override

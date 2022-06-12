@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:front_end/screens/ForgotPassword.dart';
 import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/SignUp.dart';
@@ -87,6 +86,7 @@ class SignInHome extends StatelessWidget {
                     );
                   }).onError((error, stackTrace) {
                     print('Error ${error.toString()}');
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${error}')));
                   });
                 }),
                 SizedBox(

@@ -1,25 +1,33 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/screens/SignIn.dart';
-
+import 'package:front_end/reusable_widgets/reusable_widgets.dart';
 
 class ForgotPassword extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-        home: ForgotPasswordHome()
-    );
+    return MaterialApp(home: ForgotPasswordHome());
   }
 }
 
+TextEditingController emailCtrl = TextEditingController();
+
 class ForgotPasswordHome extends StatelessWidget {
-  const ForgotPasswordHome({Key? key}) : super(key: key);
+  ForgotPasswordHome({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+            leading: IconButton(
+                onPressed: () {Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => SignIn()));},
+                icon: Icon(Icons.arrow_back),
+                color: Colors.black),
+                backgroundColor: Colors.transparent,
+                elevation: 0,),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.yellow[200],
         body: Container(
@@ -38,49 +46,49 @@ class ForgotPasswordHome extends StatelessWidget {
                   SizedBox(
                     height: 60,
                   ),
-                  Form(
-                    child: Column(
-                        children: [
-                          TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: 'Enter your email',
-                                  prefixIcon: Icon(Icons.email),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )
-                              )
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
-                              ),
-                              child: Text(
-                                  'Reset Password',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  )
-                              )
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          TextButton(
-                              onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignIn()));},
-                            child: Text('Back'),
-                          )
-                        ]
-                    ),
-
-                  )
-                ]
-            )
-        )
-    );
+                  reusableTextField(
+                      'Enter Email', Icons.email_outlined, false, emailCtrl),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        resetPassword(context);
+                      },
+                      child: Text(
+                        'Reset Password',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Colors.black;
+                            }
+                            return Colors.white;
+                          }),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30))))),
+                ])));
   }
 }
 
-
+Future resetPassword(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: emailCtrl.text.trim());
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Password Reset Email Sent')));
+  } on FirebaseAuthException catch (e) {
+    print(e);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('${e.message}')));
+  }
+}

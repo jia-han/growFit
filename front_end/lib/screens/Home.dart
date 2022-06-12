@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:front_end/main.dart';
-import 'package:front_end/screens/SignIn.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/screens/Shop.dart';
 import 'package:front_end/screens/Gallery.dart';
