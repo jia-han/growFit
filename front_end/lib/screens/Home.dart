@@ -81,12 +81,6 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  void initState() {
-    fetchData();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -94,7 +88,7 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.yellow[100],
           appBar: AppBar(
             leading: IconButton(icon: Image.asset('assets/images/health.png'),
-                onPressed: () {fetchStepData(); selectHealth(context, noOfSteps); }),
+                onPressed: () {fetchData(); fetchStepData(); selectHealth(context, noOfSteps); }),
             backgroundColor: Colors.brown,
             actions:<Widget>[
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
