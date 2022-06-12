@@ -4,6 +4,11 @@ import 'package:flutterfire_ui/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:front_end/screens/Home.dart';
+import 'package:front_end/screens/SignIn.dart';
+import 'package:front_end/screens/SignUp.dart';
+import 'package:front_end/screens/ForgotPassword.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 void main() async {
 
@@ -16,6 +21,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

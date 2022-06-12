@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/screens/Shop.dart';
 import 'package:front_end/screens/Gallery.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:health/health.dart';
 
 
 class Home extends StatefulWidget {
+
   final int treatCount;
 
   final int money;
@@ -16,10 +19,73 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
+  
   late int treatCount = widget.treatCount;
   late int money = widget.money;
   late List<String> priceList = widget.priceList;
+  int noOfSteps = 10;
+  List<HealthDataPoint> _healthDataList = [];
+  HealthFactory health = HealthFactory();
+
+  Future fetchData() async {
+    final types = [
+      HealthDataType.STEPS,
+    ];
+
+    final permissions = [
+      HealthDataAccess.READ,
+    ];
+
+    final now = DateTime.now();
+    final yesterday = now.subtract(Duration(days:5));
+    bool requested = await health.requestAuthorization(types,permissions: permissions);
+    print('requested: $requested');
+    await Permission.activityRecognition.request();
+    
+    if (requested) {
+      try {
+        List<HealthDataPoint> healthData = await health.getHealthDataFromTypes(yesterday, now, types);
+        _healthDataList.addAll((healthData.length < 100)
+            ? healthData
+            : healthData.sublist(0, 100));
+      } catch (error) {
+        print("Exception in getHealthDataFromTypes");
+      }
+    } else {
+      print ("Authorization not granted");
+    }
+  }
+
+  Future fetchStepData() async {
+    int? steps;
+
+    final now = DateTime.now();
+    final midnight = DateTime(now.year, now.month, now.day);
+
+    bool requested = await health.requestAuthorization([HealthDataType.STEPS]);
+
+    if (requested) {
+      try {
+        steps = await health.getTotalStepsInInterval(midnight, now);
+      } catch (error) {
+        print("Caught exception in getTotalStepsInInterval");
+      }
+      print('Total number of steps: $steps');
+
+      setState(() {
+        noOfSteps = (steps == null) ? 0 : steps;
+      });
+    } else {
+      print("Authorization not granted");
+    }
+  }
+
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +93,8 @@ class _HomeState extends State<Home> {
         home: Scaffold(
           backgroundColor: Colors.yellow[100],
           appBar: AppBar(
-            leading: IconButton(icon: Image.asset('assets/images/health.png'), onPressed: () => selectHealth(context) ),
+            leading: IconButton(icon: Image.asset('assets/images/health.png'),
+                onPressed: () {fetchStepData(); selectHealth(context, noOfSteps); }),
             backgroundColor: Colors.brown,
             actions:<Widget>[
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
@@ -70,11 +137,11 @@ class _HomeState extends State<Home> {
   }
 }
 
-Future<void> selectHealth(BuildContext context) async {
+Future<void> selectHealth(BuildContext context, int noOfSteps) async {
   await showDialog(context: context, builder: (context) {
     return AlertDialog(
       title: Align(alignment: Alignment.center, child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
-      content: Column(children: [Text('Steps Taken: '), Text('Time Exercised: ')], mainAxisSize: MainAxisSize.min,),
+      content: Column(children: [Text('Steps Taken: $noOfSteps'), Text('Time Exercised: ')], mainAxisSize: MainAxisSize.min,),
       actions: <Widget>[TextButton(child: Text('Back'), onPressed: () { Navigator.of(context).pop();},)],
     );
   });
