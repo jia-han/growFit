@@ -6,6 +6,8 @@ import 'package:flutterfire_ui/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:front_end/screens/Home.dart';
+import 'package:front_end/screens/ForgotPassword.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:front_end/screens/SignIn.dart';
 
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
    MyApp({Key? key}) : super(key: key);
 
   var db = FirebaseFirestore.instance;
+
 
   @override
   Widget build(BuildContext context) {
