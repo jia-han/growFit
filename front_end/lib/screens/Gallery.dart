@@ -10,7 +10,8 @@ class Gallery extends StatefulWidget {
   final int money;
   final List<String> priceList;
   final bool claimedReward;
-  const Gallery({Key? key, required this.treatCount, required this.money, required this.priceList, required this.claimedReward}) : super(key: key);
+  final int treatsFed;
+  const Gallery({Key? key, required this.treatCount, required this.money, required this.priceList, required this.claimedReward, required this.treatsFed}) : super(key: key);
 
   @override
   State<Gallery> createState() => _GalleryState();
@@ -21,6 +22,7 @@ class _GalleryState extends State<Gallery> {
   late int money = widget.money;
   late List<String> priceList = widget.priceList;
   late bool claimedReward = widget.claimedReward;
+  late int treatsFed = widget.treatsFed;
   HealthFactory health = HealthFactory();
   late int noOfSteps;
 
@@ -42,9 +44,9 @@ class _GalleryState extends State<Gallery> {
           ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount, money: money, priceList: priceList,claimedReward: claimedReward,)));},), label: 'shop'),
-            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home, color: Colors.amber[800]), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money, priceList: priceList)));},), label: 'home'),
-            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money, priceList: priceList, claimedReward: claimedReward,)));},), label: 'gallery'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/shop_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Shop(treatCount: treatCount, money: money, priceList: priceList,claimedReward: claimedReward, treatsFed: treatsFed,)));},), label: 'shop'),
+            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.home, color: Colors.amber[800]), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(treatCount: treatCount, money: money, priceList: priceList, claimedReward: claimedReward, treatsFed: treatsFed,)));},), label: 'home'),
+            BottomNavigationBarItem(icon: IconButton(icon:Image.asset('assets/images/gallery_icon.png', width: 24, height: 24), onPressed: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Gallery(treatCount: treatCount, money: money, priceList: priceList, claimedReward: claimedReward, treatsFed: treatsFed)));},), label: 'gallery'),
         ],
         ),
           body: Center(

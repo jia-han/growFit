@@ -81,7 +81,9 @@ class SignInHome extends StatelessWidget {
                                 builder: (context) => Home(
                                     treatCount: data['Treats'],
                                     money: data['Money'],
-                                    priceList: ['50', '50', '50', '50'],)));
+                                    priceList: ['50', '50', '50', '50'],
+                                claimedReward: false,
+                                treatsFed: 0,)));
                       },
                     );
                   }).onError((error, stackTrace) {
