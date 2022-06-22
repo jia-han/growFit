@@ -79,7 +79,9 @@ class SignUpHome extends StatelessWidget {
                                   builder: (context) => Home(
                                       treatCount: 0,
                                       money: 0,
-                                      priceList: ['50', '50', '50', '50'],)));
+                                      priceList: ['50', '50', '50', '50'],
+                                  claimedReward: false,
+                                  treatsFed: 0,)));
                         },
                       ).onError((error, stackTrace) {
                         print('Error ${error.toString()}');
