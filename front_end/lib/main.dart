@@ -57,7 +57,7 @@ class authGate extends StatelessWidget {
                               .then(
                             (doc) {
                               Map<String,dynamic> data = doc.data()!;
-                              return Home(treatCount: data['Treats'], money: data['Money'], priceList: ['50','50','50','50'], claimedReward: true, treatsFed: 0,);
+                              return Home(user: user, priceList: ['50','50','50','50']);
                             },
                           );
                           return SignIn();
