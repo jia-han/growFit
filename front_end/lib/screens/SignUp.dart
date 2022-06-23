@@ -70,17 +70,16 @@ class SignUpHome extends StatelessWidget {
                             'Email': emailCtrl.text,
                             'UserName': usernameCtrl.text,
                             'Money': 0,
-                            'Treats': 0
+                            'Treats': 0,
+                            'ClaimedReward': false,
+                            'TreatsFed': 0,
                           });
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Home(
-                                      treatCount: 0,
-                                      money: 0,
-                                      priceList: ['50', '50', '50', '50'],
-                                  claimedReward: false,
-                                  treatsFed: 0,)));
+                                  builder: (context) => Home(user: user,
+                                        priceList: ['50', '50', '50', '50'],
+                                      )));
                         },
                       ).onError((error, stackTrace) {
                         print('Error ${error.toString()}');

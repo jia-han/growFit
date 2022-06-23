@@ -73,17 +73,14 @@ class SignInHome extends StatelessWidget {
                         .doc(user?.uid)
                         .get()
                         .then(
-                      (doc) {
-                        Map<String, dynamic> data = doc.data()!;
+                      (doc) {                        
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Home(
-                                    treatCount: data['Treats'],
-                                    money: data['Money'],
+                                    user: user,
                                     priceList: ['50', '50', '50', '50'],
-                                claimedReward: false,
-                                treatsFed: 0,)));
+                                )));
                       },
                     );
                   }).onError((error, stackTrace) {
