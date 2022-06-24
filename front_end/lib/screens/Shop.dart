@@ -37,6 +37,7 @@ class _ShopState extends State<Shop> {
           data = doc.data()!;
           treat = data['Treats'];
           money = data['Money'];
+          claimedReward = data['ClaimedReward'];
         }
     );
 
@@ -330,7 +331,8 @@ class _ShopState extends State<Shop> {
                             .doc(user?.uid);
 
                         docUser.update({
-                          'Money' : money
+                          'Money' : money,
+                          'ClaimedReward' : true 
                         });
                       }
 
