@@ -4,6 +4,7 @@ import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/Gallery.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Shop extends StatefulWidget {
   final User? user;
@@ -21,12 +22,38 @@ class Shop extends StatefulWidget {
 class _ShopState extends State<Shop> {
   late User? user =  widget.user;
   late List<String> priceList = <String>[];
-
+  int treat = 0;
   HealthFactory health = HealthFactory();
   late int noOfSteps;
+  Map<String,dynamic> data = Map();
+  int money = 0;
+  bool claimedReward = false;
 
+  Future fetchDocData() async {
+    print(user.toString());
+    var userData = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get().then(
+            (doc) {
+          print(doc.data());
+          data = doc.data()!;
+          treat = data['Treats'];
+          money = data['Money'];
+        }
+    );
+
+
+
+  }
+  @override
+  initState() {
+
+    super.initState();
+    fetchDocData().whenComplete((){
+      setState(() {});
+    });
+  }
   @override
   Widget build(BuildContext context) {
+
     for (var i = 0; i < 4; i++) {
       priceList.add(widget.priceList[i]);
     }
@@ -50,7 +77,7 @@ class _ShopState extends State<Shop> {
               IconButton(
                   icon: Image.asset('assets/images/treat.png'),
                   onPressed: () {}),
-              Align(alignment: Alignment.center, child: Text('$treatCount')),
+              Align(alignment: Alignment.center, child: Text('$treat')),
             ]),
         bottomNavigationBar: BottomNavigationBar(
           items: [
@@ -118,9 +145,20 @@ class _ShopState extends State<Shop> {
                             if (money - 50 >= 0) {
                               setState(() {
                                 money = money - 50;
-                                treatCount++;
+                                treat++;
                               });
+
+
                             }
+                            var docUser = FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user?.uid);
+
+                            docUser.update({
+                              'Treats' : treat,
+                              'Money' : money
+                            });
+
                           },
                           child: Text('50'),
                         )
@@ -234,6 +272,13 @@ class _ShopState extends State<Shop> {
     setState(() {
       priceList[i] == 'BOUGHT';
     });
+    var docUser = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid);
+
+    docUser.update({
+      'Money' : money
+    });
   }
 
   Future fetchStepData() async {
@@ -273,12 +318,22 @@ class _ShopState extends State<Shop> {
                 Text('Steps Taken: $noOfSteps/5000'),
                 TextButton(
                     onPressed: () {
+
                       if (noOfSteps >= 300 && claimedReward == false) {
                         setState(() {
                           claimedReward = true;
                           money = money + 50;
+
+                        });
+                        var docUser = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user?.uid);
+
+                        docUser.update({
+                          'Money' : money
                         });
                       }
+
                     },
                     child: Text('Get Daily Reward')),
                 Text('Time Exercised: ')
