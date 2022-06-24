@@ -23,6 +23,8 @@ class _GalleryState extends State<Gallery> {
 
   HealthFactory health = HealthFactory();
   late int noOfSteps;
+  int money = 50;
+  int treatCount = 50;
 
   @override
   Widget build(BuildContext context) {
@@ -114,12 +116,13 @@ class _GalleryState extends State<Gallery> {
         title: Align(alignment: Alignment.center, child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
         content: Column(children: [Text('Steps Taken: $noOfSteps/5000'),
           TextButton(onPressed:  () {
+            /**
             if (noOfSteps >= 300 && claimedReward == false) {
               setState(() {
                 claimedReward = true;
                 money = money + 50;
               });
-            }
+            }**/
           }, child: Text('Get Daily Reward')),
           Text('Time Exercised: ')], mainAxisSize: MainAxisSize.min,),
         actions: <Widget>[TextButton(child: Text('Back'), onPressed: () { Navigator.of(context).pop();},)],

@@ -6,7 +6,7 @@ import 'package:front_end/screens/Gallery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class Home extends StatefulWidget {
@@ -24,16 +24,38 @@ class _HomeState extends State<Home> {
   late List<String> priceList = widget.priceList;
   late int noOfSteps;
   late int itemEquipped;
+  int treat = 0;
+  late int money = 0;
+  bool claimedReward = true;
   List<HealthDataPoint> _healthDataList = [];
   HealthFactory health = HealthFactory();
+  Map<String,dynamic> data = Map();
 
   @override
   initState() {
+
     fetchData();
     super.initState();
+    fetchDocData().whenComplete((){
+      setState(() {});
+    });
+  }
+
+  Future fetchDocData() async {
+
+    var userData = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get().then(
+            (doc) {
+          print(doc.data());
+          data = doc.data()!;
+          treat = data['Treats'];
+          money = data['Money'];
+        }
+    );
+
   }
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
         home: Scaffold(
@@ -52,9 +74,9 @@ class _HomeState extends State<Home> {
               ));},),
               //REFER TO TODO 1
               IconButton(icon: Image.asset('assets/images/coin.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('listener')),
+              Align(alignment: Alignment.center, child: Text('$money')),
               IconButton(icon: Image.asset('assets/images/treat.png'), onPressed: () {} ),
-              Align(alignment: Alignment.center, child: Text('listener')),
+              Align(alignment: Alignment.center, child: Text('$treat')),
             ]
           ),
         bottomNavigationBar: BottomNavigationBar(
@@ -81,9 +103,18 @@ class _HomeState extends State<Home> {
                     Image.asset('assets/images/ball_3.png'),
                   // FlatButton is depreciated
                   TextButton( onPressed: () {
-                    setState(() {
                       //REFER TO TODO 2
-                    });
+                      var docUser = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid);
+                      setState((){
+                        treat--;
+                      });
+                      docUser.update({
+                        'Treats' : treat
+                      });
+
+
                   },
                  child: Image.asset('assets/images/treat_bowl.png'))
                 ]
@@ -172,10 +203,18 @@ class _HomeState extends State<Home> {
         content: Column(children: [Text('Steps Taken: $noOfSteps/300'),
           TextButton(onPressed:  () {
             //REFER TO TODO 3
+
             if (noOfSteps >= 300 && claimedReward == false) {
               setState(() {
                 claimedReward = true;
                 money = money + 50;
+              });
+              var docUser = FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user?.uid);
+
+              docUser.update({
+                'Money' : money
               });
             }
           }, child: Text('Get Daily Reward')),
