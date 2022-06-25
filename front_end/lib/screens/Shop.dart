@@ -108,6 +108,7 @@ class _ShopState extends State<Shop> {
                   },
                 ),
                 label: 'home'),
+            /**
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Image.asset('assets/images/gallery_icon.png',
@@ -121,7 +122,7 @@ class _ShopState extends State<Shop> {
                                 )));
                   },
                 ),
-                label: 'gallery'),
+                label: 'gallery'), **/
           ],
         ),
         body: Column(
@@ -139,9 +140,9 @@ class _ShopState extends State<Shop> {
                             child: Image.asset('assets/images/treatbag.png')),
                         ElevatedButton(
                           onPressed: () {
-                            if (money - 50 >= 0) {
+                            if (money - 10 >= 0) {
                               setState(() {
-                                money = money - 50;
+                                money = money - 10;
                                 treat++;
                               });
 
@@ -157,7 +158,7 @@ class _ShopState extends State<Shop> {
                             });
 
                           },
-                          child: Text('50'),
+                          child: Text('10'),
                         )
                       ])),
                   Container(
@@ -218,7 +219,7 @@ class _ShopState extends State<Shop> {
                             ),
                           ]))
                 ]),
-            Row(children: <Widget>[
+            /**Row(children: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_left, size: 100),
                   color: Colors.brown,
@@ -228,7 +229,7 @@ class _ShopState extends State<Shop> {
                   icon: Icon(Icons.arrow_right, size: 100),
                   color: Colors.brown,
                   onPressed: () {}),
-            ])
+            ]) **/
           ],
         ),
       ),
@@ -236,16 +237,26 @@ class _ShopState extends State<Shop> {
   }
 
   void sellStuff(int i) {
+
+    var docUser = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid);
+
     if (priceList['item$i']  == 'BOUGHT') {
       for (int k = 1; k < 4; k++) {
         if (priceList['item$k'] == 'EQUIPPED') {
           setState(() {
             priceList['item$k'] = 'BOUGHT';
           });
+
         }
+
       }
       setState(() {
         priceList['item$i'] = 'EQUIPPED';
+      });
+      docUser.update({
+        'priceList' : priceList
       });
       return;
     }
@@ -254,24 +265,24 @@ class _ShopState extends State<Shop> {
       setState(() {
         priceList['item$i'] == 'BOUGHT';
       });
+      docUser.update({
+        'priceList' : priceList
+      });
       return;
     }
     if (priceList['item$i'] != 'BOUGHT' &&
         priceList['item$i'] != 'EQUIPPED' &&
-        (money - 50 >= 0)) {
+        (money - 250 >= 0)) {
       setState(() {
-        money = money - 50;
+        money = money - 250;
         priceList['item$i'] = 'BOUGHT';
       });
-      return;
     }
 
     setState(() {
       priceList['item$i'] == 'BOUGHT';
     });
-    var docUser = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user?.uid);
+
 
     docUser.update({
       'Money' : money,
@@ -313,7 +324,7 @@ class _ShopState extends State<Shop> {
                 child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
             content: Column(
               children: [
-                Text('Steps Taken: $noOfSteps/5000'),
+                Text('Steps Taken: $noOfSteps/300'),
                 TextButton(
                     onPressed: () {
 
@@ -335,7 +346,7 @@ class _ShopState extends State<Shop> {
 
                     },
                     child: Text('Get Daily Reward')),
-                Text('Time Exercised: ')
+                //Text('Time Exercised: ')
               ],
               mainAxisSize: MainAxisSize.min,
             ),
