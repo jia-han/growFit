@@ -11,11 +11,9 @@ import 'dart:math';
 
 class Home extends StatefulWidget {
   final User? user;
-  final List<String> priceList;
   const Home({
     Key? key,
     required this.user,
-    required this.priceList,
   }) : super(key: key);
 
   @override
@@ -24,7 +22,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late User? user = widget.user;
-  late List<String> priceList = widget.priceList;
+  List<String> priceList = ['','','',''];
   late int noOfSteps;
   late int itemEquipped;
   int treat = 0;
@@ -56,6 +54,7 @@ class _HomeState extends State<Home> {
       money = data['Money'];
       treatsFed = data['TreatsFed'];
       claimedReward = data['ClaimedReward'];
+      priceList = data['priceList'];
     });
   }
 
@@ -115,7 +114,6 @@ class _HomeState extends State<Home> {
                         MaterialPageRoute(
                             builder: (context) => Shop(
                                   user: user,
-                                  priceList: priceList,
                                 )));
                   },
                 ),
@@ -129,7 +127,6 @@ class _HomeState extends State<Home> {
                         MaterialPageRoute(
                             builder: (context) => Home(
                                   user: user,
-                                  priceList: priceList,
                                 )));
                   },
                 ),
@@ -144,7 +141,6 @@ class _HomeState extends State<Home> {
                         MaterialPageRoute(
                             builder: (context) => Gallery(
                                   user: user,
-                                  priceList: priceList,
                                 )));
                   },
                 ),
@@ -166,7 +162,6 @@ class _HomeState extends State<Home> {
                   Image.asset('assets/images/ball_2.png'),
                 if (ItemEquipped() == 3)
                   Image.asset('assets/images/ball_3.png'),
-                // FlatButton is depreciated
                 TextButton(
                     onPressed: () {
                       //REFER TO TODO 2

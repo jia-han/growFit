@@ -79,7 +79,6 @@ class SignInHome extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => Home(
                                     user: user,
-                                    priceList: ['50', '50', '50', '50'],
                                 )));
                       },
                     );

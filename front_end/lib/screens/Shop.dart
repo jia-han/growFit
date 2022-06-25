@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/screens/Home.dart';
@@ -8,11 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Shop extends StatefulWidget {
   final User? user;
-  final List<String> priceList;
   const Shop({
     Key? key,
     required this.user,
-    required this.priceList,
   }) : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class Shop extends StatefulWidget {
 
 class _ShopState extends State<Shop> {
   late User? user =  widget.user;
-  late List<String> priceList = <String>[];
+  LinkedHashMap<String,dynamic> priceList = LinkedHashMap();
   int treat = 0;
   HealthFactory health = HealthFactory();
   late int noOfSteps;
@@ -38,6 +38,8 @@ class _ShopState extends State<Shop> {
           treat = data['Treats'];
           money = data['Money'];
           claimedReward = data['ClaimedReward'];
+          priceList = data['priceList'];
+          print(priceList);
         }
     );
 
@@ -55,9 +57,6 @@ class _ShopState extends State<Shop> {
   @override
   Widget build(BuildContext context) {
 
-    for (var i = 0; i < 4; i++) {
-      priceList.add(widget.priceList[i]);
-    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -92,7 +91,6 @@ class _ShopState extends State<Shop> {
                         MaterialPageRoute(
                             builder: (context) => Shop(
                                   user: user,
-                                  priceList: priceList,
                                 )));
                   },
                 ),
@@ -106,7 +104,6 @@ class _ShopState extends State<Shop> {
                         MaterialPageRoute(
                             builder: (context) => Home(
                                   user: user,
-                                  priceList: priceList,
                                 )));
                   },
                 ),
@@ -121,7 +118,6 @@ class _ShopState extends State<Shop> {
                         MaterialPageRoute(
                             builder: (context) => Gallery(
                                   user: user,
-                                  priceList: priceList,
                                 )));
                   },
                 ),
@@ -178,7 +174,7 @@ class _ShopState extends State<Shop> {
                           onPressed: () {
                             sellStuff(1);
                           },
-                          child: Text('${priceList[1]}'),
+                          child: Text('${priceList['item1']}'),
                         ),
                       ]))
                 ]),
@@ -199,7 +195,7 @@ class _ShopState extends State<Shop> {
                           onPressed: () {
                             sellStuff(2);
                           },
-                          child: Text('${priceList[2]}'),
+                          child: Text('${priceList['item2']}'),
                         ),
                       ])),
                   Container(
@@ -218,7 +214,7 @@ class _ShopState extends State<Shop> {
                               onPressed: () {
                                 sellStuff(3);
                               },
-                              child: Text('${priceList[3]}'),
+                              child: Text('${priceList['item3']}'),
                             ),
                           ]))
                 ]),
@@ -240,45 +236,46 @@ class _ShopState extends State<Shop> {
   }
 
   void sellStuff(int i) {
-    if (priceList[i] == 'BOUGHT') {
+    if (priceList['item$i']  == 'BOUGHT') {
       for (int k = 1; k < 4; k++) {
-        if (priceList[k] == 'EQUIPPED') {
+        if (priceList['item$k'] == 'EQUIPPED') {
           setState(() {
-            priceList[k] = 'BOUGHT';
+            priceList['item$k'] = 'BOUGHT';
           });
         }
       }
       setState(() {
-        priceList[i] = 'EQUIPPED';
+        priceList['item$i'] = 'EQUIPPED';
       });
       return;
     }
 
-    if (priceList[i] == 'EQUIPPED') {
+    if (priceList['item$i'] == 'EQUIPPED') {
       setState(() {
-        priceList[i] == 'BOUGHT';
+        priceList['item$i'] == 'BOUGHT';
       });
       return;
     }
-    if (priceList[i] != 'BOUGHT' &&
-        priceList[i] != 'EQUIPPED' &&
+    if (priceList['item$i'] != 'BOUGHT' &&
+        priceList['item$i'] != 'EQUIPPED' &&
         (money - 50 >= 0)) {
       setState(() {
         money = money - 50;
-        priceList[i] = 'BOUGHT';
+        priceList['item$i'] = 'BOUGHT';
       });
       return;
     }
 
     setState(() {
-      priceList[i] == 'BOUGHT';
+      priceList['item$i'] == 'BOUGHT';
     });
     var docUser = FirebaseFirestore.instance
         .collection('users')
         .doc(user?.uid);
 
     docUser.update({
-      'Money' : money
+      'Money' : money,
+      'priceList' : priceList
     });
   }
 
@@ -330,7 +327,7 @@ class _ShopState extends State<Shop> {
                             .collection('users')
                             .doc(user?.uid);
 
-                        docUser.update({
+                        docUser.update({  
                           'Money' : money,
                           'ClaimedReward' : true 
                         });

@@ -73,12 +73,12 @@ class SignUpHome extends StatelessWidget {
                             'Treats': 0,
                             'ClaimedReward': false,
                             'TreatsFed': 0,
+                            'priceList' : {'item1' : '50','item2' : '50','item3' : '50' }
                           });
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => Home(user: user,
-                                        priceList: ['50', '50', '50', '50'],
                                       )));
                         },
                       ).onError((error, stackTrace) {
