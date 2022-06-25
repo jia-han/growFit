@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:front_end/main.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:math';
+
 
 class Home extends StatefulWidget {
   final User? user;
@@ -22,7 +24,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late User? user = widget.user;
-  List<String> priceList = ['','','',''];
+  LinkedHashMap<String,dynamic> priceList = LinkedHashMap();
   late int noOfSteps;
   late int itemEquipped;
   int treat = 0;
@@ -81,7 +83,6 @@ class _HomeState extends State<Home> {
                       builder: (context) => AlertDialog(
                             title: Text('Sign out?'),
                             actions: [
-                              //TODO: sign out button
                               ElevatedButton(
                                 onPressed: () {
                                   signOut();
@@ -92,7 +93,6 @@ class _HomeState extends State<Home> {
                           ));
                 },
               ),
-              //REFER TO TODO 1
               IconButton(
                   icon: Image.asset('assets/images/coin.png'),
                   onPressed: () {}),
@@ -131,6 +131,7 @@ class _HomeState extends State<Home> {
                   },
                 ),
                 label: 'home'),
+            /**
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Image.asset('assets/images/gallery_icon.png',
@@ -144,40 +145,53 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-                label: 'gallery'),
+                label: 'gallery'),**/
           ],
         ),
         body: 
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Stack(
+          alignment: Alignment.bottomRight,
+          fit: StackFit.loose,
           children: [
+            petImage(),
+            if (ItemEquipped() == 1)
+              Container(
+                alignment: Alignment.bottomLeft,
+                child: Image.asset('assets/images/ball_1.png'),
+                padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+              ),
+            if (ItemEquipped() == 2)
+              Container(
+                alignment: Alignment.bottomLeft,
+                child: Image.asset('assets/images/ball_2.png'),
+                padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+              ),
+            if (ItemEquipped() == 3)
+              Container(
+                alignment: Alignment.bottomLeft,
+                child: Image.asset('assets/images/ball_3.png'),
+                padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+              ),
             Container(
-                padding: EdgeInsets.fromLTRB(20.0, 60.0, 20.0, 0),
-                child: Align(alignment: Alignment.center, child: petImage())),
-            Expanded(
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                if (ItemEquipped() == 1)
-                  Image.asset('assets/images/ball_1.png'),
-                if (ItemEquipped() == 2)
-                  Image.asset('assets/images/ball_2.png'),
-                if (ItemEquipped() == 3)
-                  Image.asset('assets/images/ball_3.png'),
-                TextButton(
-                    onPressed: () {
-                      //REFER TO TODO 2
-                      var docUser = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user?.uid);
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.fromLTRB(200, 250, 30, 50),
+              child: TextButton(
+                  onPressed: () {
+                    var docUser = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.uid);
+                    if (treat > 0) {
                       setState(() {
                         treat--;
                         treatsFed++;
                       });
                       docUser.update({'Treats': treat, 'TreatsFed': treatsFed});
-                    },
-                    child: Image.asset('assets/images/treat_bowl.png'))
-              ]),
+                    }
+
+                  },
+                  child: Image.asset('assets/images/treat_bowl.png')),
             ),
-            SizedBox(height: 30),
+
           ],
         ),
       ),
@@ -186,18 +200,26 @@ class _HomeState extends State<Home> {
 
   int ItemEquipped() {
     for (int k = 1; k < 4; k++) {
-      if (priceList[k] == 'EQUIPPED') {
+      if (priceList['item$k'] == 'EQUIPPED') {
         return k;
       }
     }
     return 0;
   }
 
-  //TODO: Pet scaling (functions time :o)
   Widget petImage() {
-    return Image.asset(
-      'assets/images/pet.png',
-    );
+
+    double padding = -0.4286*treatsFed + 80;
+    if (padding < 20) {
+      padding = 20;
+    }
+    if (padding > 80) {
+      padding = 80;
+    }
+    return Container(
+      padding: EdgeInsets.fromLTRB(padding, 60, padding, 50),
+      child: Image.asset('assets/images/pet.png'),
+      );
   }
 
   Future fetchData() async {
@@ -271,7 +293,6 @@ class _HomeState extends State<Home> {
                 Text('Steps Taken: $noOfSteps/300'),
                 TextButton(
                     onPressed: () {
-                      //REFER TO TODO 3
 
                       if (noOfSteps >= 300 && claimedReward == false) {
                         setState(() {
@@ -286,7 +307,7 @@ class _HomeState extends State<Home> {
                       }
                     },
                     child: Text('Get Daily Reward')),
-                Text('Time Exercised: ')
+                //Text('Time Exercised: ')
               ],
               mainAxisSize: MainAxisSize.min,
             ),
@@ -310,9 +331,3 @@ signOut() async {
     },
   );
 }
-
-//TODO 1: listener for money and treats
-
-//TODO 2: R/W for treatcount and treatfed
-
-//TODO 3: R/W for claimedreward and money
