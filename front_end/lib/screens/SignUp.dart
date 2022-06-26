@@ -15,7 +15,6 @@ class SignUp extends StatelessWidget {
 class SignUpHome extends StatelessWidget {
   SignUpHome({Key? key}) : super(key: key);
 
-  TextEditingController usernameCtrl = TextEditingController();
   TextEditingController emailCtrl = TextEditingController();
   TextEditingController pwCtrl = TextEditingController();
 
@@ -42,11 +41,6 @@ class SignUpHome extends StatelessWidget {
                   ),
                   Column(children: [
                     reusableTextField(
-                        'Enter Username', Icons.person, false, usernameCtrl),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    reusableTextField(
                         'Enter Email', Icons.email_outlined, false, emailCtrl),
                     SizedBox(
                       height: 20,
@@ -68,7 +62,6 @@ class SignUpHome extends StatelessWidget {
                               .doc(user?.uid)
                               .set({
                             'Email': emailCtrl.text,
-                            'UserName': usernameCtrl.text,
                             'Money': 0,
                             'Treats': 0,
                             'ClaimedReward': false,
