@@ -7,7 +7,7 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(home: ForgotPasswordHome());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: ForgotPasswordHome());
   }
 }
 

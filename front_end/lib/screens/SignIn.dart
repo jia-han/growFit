@@ -10,7 +10,7 @@ class SignIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(home: SignInHome());
+    return MaterialApp(debugShowCheckedModeBanner:false, home: SignInHome());
   }
 }
 
@@ -42,7 +42,7 @@ class SignInHome extends StatelessWidget {
                   height: 60,
                 ),
                 reusableTextField(
-                    'Enter Username', Icons.email_outlined, false, emailCtrl),
+                    'Enter Email', Icons.email_outlined, false, emailCtrl),
                 SizedBox(
                   height: 30,
                 ),
