@@ -180,12 +180,18 @@ class _HomeState extends State<Home> {
                     var docUser = FirebaseFirestore.instance
                         .collection('users')
                         .doc(user?.uid);
-                    if (treat > 0) {
+                    if (treat >= 0) {
                       setState(() {
                         treat--;
                         treatsFed++;
+
+
+                        priceList['item1'] = '250';
+                        priceList['item3'] = '250';
+                        priceList['item2'] = '250';
+
                       });
-                      docUser.update({'Treats': treat, 'TreatsFed': treatsFed});
+                      docUser.update({'Treats': treat, 'TreatsFed': treatsFed, 'Money': money, 'priceList': priceList});
                     }
 
                   },
@@ -290,11 +296,11 @@ class _HomeState extends State<Home> {
                 child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
             content: Column(
               children: [
-                Text('Steps Taken: $noOfSteps/300'),
+                Text('Steps Taken: $noOfSteps/5000'),
                 TextButton(
                     onPressed: () {
 
-                      if (noOfSteps >= 300 && claimedReward == false) {
+                      if (noOfSteps >= 5000 && claimedReward == false) {
                         setState(() {
                           claimedReward = true;
                           money = money + 50;

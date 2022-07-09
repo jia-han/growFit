@@ -8,7 +8,7 @@ import 'package:front_end/reusable_widgets/reusable_widgets.dart';
 class SignUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: SignUpHome());
+    return MaterialApp(debugShowCheckedModeBanner:false, home: SignUpHome());
   }
 }
 
@@ -40,6 +40,7 @@ class SignUpHome extends StatelessWidget {
                     height: 60,
                   ),
                   Column(children: [
+                   
                     reusableTextField(
                         'Enter Email', Icons.email_outlined, false, emailCtrl),
                     SizedBox(
@@ -66,7 +67,7 @@ class SignUpHome extends StatelessWidget {
                             'Treats': 0,
                             'ClaimedReward': false,
                             'TreatsFed': 0,
-                            'priceList' : {'item1' : '50','item2' : '50','item3' : '50' }
+                            'priceList' : {'item1' : '250','item2' : '250','item3' : '250' }
                           });
                           Navigator.pushReplacement(
                               context,
