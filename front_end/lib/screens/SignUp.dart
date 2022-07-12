@@ -41,12 +41,6 @@ class SignUpHome extends StatelessWidget {
                     height: 60,
                   ),
                   Column(children: [
-                    /**
-                    reusableTextField(
-                        'Enter Username', Icons.person, false, usernameCtrl),
-                    SizedBox(
-                      height: 20,
-                    ),**/
                     reusableTextField(
                         'Enter Email', Icons.email_outlined, false, emailCtrl),
                     SizedBox(

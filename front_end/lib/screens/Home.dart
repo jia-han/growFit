@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:front_end/main.dart';
@@ -9,7 +10,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:screenshot/screenshot.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Home extends StatefulWidget {
   final User? user;
@@ -34,6 +36,12 @@ class _HomeState extends State<Home> {
   List<HealthDataPoint> _healthDataList = [];
   HealthFactory health = HealthFactory();
   Map<String, dynamic> data = Map();
+  ScreenshotController screenshotController = ScreenshotController();
+  late Uint8List _imageFile;
+  late String fileName;
+  late String path;
+
+
 
   @override
   initState() {
@@ -42,6 +50,19 @@ class _HomeState extends State<Home> {
     fetchDocData().whenComplete(() {
       setState(() {});
     });
+  }
+
+  Future<String> get imagePath async {
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    return '$directory/pet.png';
+  }
+
+  Future screenshotFunc() async {
+    final imageDirectory = await imagePath;
+    //fileName = await DateTime.now().microsecondsSinceEpoch as String;
+    fileName = 'pet.png';
+    await screenshotController.captureAndSave(imageDirectory, fileName: fileName);
+
   }
 
   Future fetchDocData() async {
@@ -75,6 +96,23 @@ class _HomeState extends State<Home> {
                 }),
             backgroundColor: Colors.brown,
             actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.screenshot),
+                onPressed: () {
+                  /**
+                  screenshotController
+                      .capture(delay: Duration(milliseconds: 10))
+                      .then((capturedImage) async {
+                    ShowCapturedWidget(context, capturedImage!);
+                  }).catchError((onError) {
+                    print(onError);
+                  });**/
+
+                  screenshotFunc();
+
+
+                },
+              ),
               IconButton(
                 icon: Icon(Icons.power_settings_new),
                 onPressed: () {
@@ -131,7 +169,6 @@ class _HomeState extends State<Home> {
                   },
                 ),
                 label: 'home'),
-            /**
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Image.asset('assets/images/gallery_icon.png',
@@ -145,60 +182,68 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-                label: 'gallery'),**/
+                label: 'gallery'),
           ],
         ),
         body: 
-        Stack(
-          alignment: Alignment.bottomRight,
-          fit: StackFit.loose,
-          children: [
-            petImage(),
-            if (ItemEquipped() == 1)
-              Container(
-                alignment: Alignment.bottomLeft,
-                child: Image.asset('assets/images/ball_1.png'),
-                padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+        Screenshot(
+          controller: screenshotController,
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            fit: StackFit.loose,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    alignment: Alignment.topLeft,
+                    onPressed: () {},
+                    icon: Icon(Icons.cake_outlined, color: Colors.brown,),
+                  ),
+                  Text('Level ${treatsFed~/10}', style: TextStyle(fontSize: 20, color: Colors.brown, fontWeight: FontWeight.bold)),
+                ],
               ),
-            if (ItemEquipped() == 2)
+              petImage(),
+              if (ItemEquipped() == 1)
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Image.asset('assets/images/ball_1.png'),
+                  padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+                ),
+              if (ItemEquipped() == 2)
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Image.asset('assets/images/ball_2.png'),
+                  padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+                ),
+              if (ItemEquipped() == 3)
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Image.asset('assets/images/ball_3.png'),
+                  padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+                ),
               Container(
-                alignment: Alignment.bottomLeft,
-                child: Image.asset('assets/images/ball_2.png'),
-                padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+                alignment: Alignment.bottomRight,
+                padding: EdgeInsets.fromLTRB(200, 250, 30, 50),
+                child: TextButton(
+                    onPressed: () {
+                      var docUser = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid);
+                      if (treat >= 0) {
+                        setState(() {
+                          treat--;
+                          treatsFed++;
+
+                        });
+                        docUser.update({'Treats': treat, 'TreatsFed': treatsFed,});
+                      }
+
+                    },
+                    child: Image.asset('assets/images/treat_bowl.png')),
               ),
-            if (ItemEquipped() == 3)
-              Container(
-                alignment: Alignment.bottomLeft,
-                child: Image.asset('assets/images/ball_3.png'),
-                padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
-              ),
-            Container(
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.fromLTRB(200, 250, 30, 50),
-              child: TextButton(
-                  onPressed: () {
-                    var docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(user?.uid);
-                    if (treat >= 0) {
-                      setState(() {
-                        treat--;
-                        treatsFed++;
 
-
-                        priceList['item1'] = '250';
-                        priceList['item3'] = '250';
-                        priceList['item2'] = '250';
-
-                      });
-                      docUser.update({'Treats': treat, 'TreatsFed': treatsFed, 'Money': money, 'priceList': priceList});
-                    }
-
-                  },
-                  child: Image.asset('assets/images/treat_bowl.png')),
-            ),
-
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -335,5 +380,22 @@ signOut() async {
     (value) {
       runApp(new MaterialApp(home: new MyApp()));
     },
+  );
+}
+
+Future<dynamic> ShowCapturedWidget(
+    BuildContext context, Uint8List capturedImage) {
+  return showDialog(
+    useSafeArea: false,
+    context: context,
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        title: Text("Captured widget screenshot"),
+      ),
+      body: Center(
+          child: capturedImage != null
+              ? Image.memory(capturedImage)
+              : Container()),
+    ),
   );
 }

@@ -108,7 +108,6 @@ class _ShopState extends State<Shop> {
                   },
                 ),
                 label: 'home'),
-            /**
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Image.asset('assets/images/gallery_icon.png',
@@ -122,7 +121,7 @@ class _ShopState extends State<Shop> {
                                 )));
                   },
                 ),
-                label: 'gallery'), **/
+                label: 'gallery'),
           ],
         ),
         body: Column(

@@ -1,9 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/screens/Shop.dart';
 import 'package:front_end/screens/Home.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:screenshot/screenshot.dart';
 
 class Gallery extends StatefulWidget {
   final User? user;
@@ -22,11 +29,48 @@ class _GalleryState extends State<Gallery> {
   List<String> priceList = ['','','',''];
   HealthFactory health = HealthFactory();
   late int noOfSteps;
-  int money = 50;
-  int treatCount = 50;
+  int money = 0;
+  late Image image;
+  int treat = 0;
+  bool claimedReward = true;
+  int treatsFed = 0;
+  List<HealthDataPoint> _healthDataList = [];
+  Map<String, dynamic> data = Map();
+  bool isImagePresent = false;
+  ScreenshotController screenshotController = ScreenshotController();
+
+  Future fetchDocData() async {
+    print(user.toString());
+    var userData = await FirebaseFirestore.instance.collection('users').doc(
+        user?.uid).get().then(
+            (doc) {
+          print(doc.data());
+          data = doc.data()!;
+          treat = data['Treats'];
+          money = data['Money'];
+          claimedReward = data['ClaimedReward'];
+          priceList = data['priceList'];
+          print(priceList);
+        }
+    );
+  }
+
+  @override
+  initState() {
+    _loadImage().whenComplete(() {
+      setState(() {});
+    });
+    super.initState();
+
+    fetchDocData().whenComplete((){
+      setState(() {});
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    _loadImage();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -47,7 +91,7 @@ class _GalleryState extends State<Gallery> {
                 IconButton(
                     icon: Image.asset('assets/images/treat.png'),
                     onPressed: () {}),
-                Align(alignment: Alignment.center, child: Text('$treatCount')),
+                Align(alignment: Alignment.center, child: Text('$treat')),
               ]),
           bottomNavigationBar: BottomNavigationBar(
             items: [
@@ -97,42 +141,54 @@ class _GalleryState extends State<Gallery> {
           body: Center(
             child: Column(children: <Widget>[
               SizedBox(height: 100),
-              Container(
-                  height: 300,
-                  width: 250,
-                  color: Colors.brown[200],
-                  child: Column(children: <Widget>[
-                    Image.asset('assets/images/pet.png'),
-                    Text(
-                      '26/09/22',
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    Text(
-                      'Steps taken:',
-                      style: TextStyle(fontSize: 30),
-                    ),
-                  ])),
+              Screenshot(
+                controller: screenshotController,
+                child: Container(
+                    //decoration: BoxDecoration(border: Border.all()),
+                    height: 300,
+                    width: 250,
+                    color: Colors.orange[200],
+                    child: Column(children: <Widget>[
+                      Expanded(
+                        child: isImagePresent != false
+                        ? image
+                        : SizedBox(width: 30, height: 30),
+                      ),
+                    ])),
+              ),
               Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
+                    /**
                     IconButton(
                         icon: Icon(Icons.arrow_left, size: 100),
                         color: Colors.brown,
-                        onPressed: () {}),
+                        onPressed: () {}), **/
                     IconButton(
+                        alignment: Alignment.center,
                         icon: Icon(Icons.share, size: 50),
                         color: Colors.brown,
-                        onPressed: () {}),
+                        onPressed: () async {
+                          final directory = (await getApplicationDocumentsDirectory ()).path;
+                          String fileName = 'gallery.png';
+                          final image = await screenshotController.capture();
+
+
+
+                          shareFunc(image!);
+                        }),
+                    /**
                     IconButton(
                         icon: Icon(Icons.arrow_right, size: 100),
                         color: Colors.brown,
-                        onPressed: () {}),
+                        onPressed: () {}), **/
                   ])
             ]),
           )),
     );
   }
+
 
   Future fetchStepData() async {
     int? steps;
@@ -194,5 +250,35 @@ class _GalleryState extends State<Gallery> {
             ],
           );
         });
+  }
+
+  Future<String> get imagePath async {
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    return '$directory/pet.png';
+  }
+
+  Future<void> _loadImage() async {
+    final path = await imagePath;
+    final _doesTheImageExist = File('${path}/pet.png').existsSync();
+    //print(_doesTheImageExist);
+    if (_doesTheImageExist == true) {
+      setState(() {
+        image = Image.file(File("${path}/pet.png"));
+        isImagePresent = true;
+      });
+    } else {
+      setState(() {
+        //image = null;
+        isImagePresent = false;
+      });
+    }
+  }
+
+  Future shareFunc(Uint8List bytes) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final image = File('${directory.path}/gallery.png');
+    image.writeAsBytes(bytes);
+
+    await Share.shareFiles([image.path]);
   }
 }
