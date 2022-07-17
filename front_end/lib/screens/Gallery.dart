@@ -11,6 +11,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Gallery extends StatefulWidget {
   final User? user;
@@ -166,6 +168,16 @@ class _GalleryState extends State<Gallery> {
                         color: Colors.brown,
                         onPressed: () {}), **/
                     IconButton(
+                      alignment: Alignment.center,
+                      icon: Icon(Icons.save, size: 50),
+                      color: Colors.brown,
+                      onPressed: () async {
+                        final image = await screenshotController.capture();
+
+                        await saveImage(image!);
+                      }
+                    ),
+                    IconButton(
                         alignment: Alignment.center,
                         icon: Icon(Icons.share, size: 50),
                         color: Colors.brown,
@@ -227,16 +239,21 @@ class _GalleryState extends State<Gallery> {
                 Text('Steps Taken: $noOfSteps/5000'),
                 TextButton(
                     onPressed: () {
-                      /**
-            if (noOfSteps >= 300 && claimedReward == false) {
-              setState(() {
-                claimedReward = true;
-                money = money + 50;
-              });
-            }**/
+
+                      if (noOfSteps >= 5000 && claimedReward == false) {
+                        setState(() {
+                          claimedReward = true;
+                          money = money + 50;
+                        });
+                        var docUser = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user?.uid);
+
+                        docUser.update({'Money': money, 'ClaimedReward': true});
+                      }
                     },
                     child: Text('Get Daily Reward')),
-                Text('Time Exercised: ')
+                //Text('Time Exercised: ')
               ],
               mainAxisSize: MainAxisSize.min,
             ),
@@ -280,5 +297,14 @@ class _GalleryState extends State<Gallery> {
     image.writeAsBytes(bytes);
 
     await Share.shareFiles([image.path]);
+  }
+
+  Future<String> saveImage(Uint8List bytes) async {
+
+    await [Permission.storage].request();
+    final fileName = 'growfit_${DateTime.now()}';
+    final saved = await ImageGallerySaver.saveImage(bytes, name: fileName);
+
+    return saved['filePath'];
   }
 }
