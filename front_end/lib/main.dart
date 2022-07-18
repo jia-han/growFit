@@ -1,5 +1,6 @@
 //import 'dart:html';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -18,6 +19,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   runApp( MyApp());
 }
 
@@ -64,4 +66,10 @@ class authGate extends StatelessWidget {
         }
       });
   }
+}
+
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('message received!');
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {return main();});
+
 }

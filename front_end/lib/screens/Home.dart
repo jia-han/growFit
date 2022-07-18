@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/main.dart';
 import 'package:intl/intl.dart';
@@ -25,8 +26,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late FirebaseMessaging messaging;
   late User? user = widget.user;
-  LinkedHashMap<String,dynamic> priceList = LinkedHashMap();
+  LinkedHashMap<String, dynamic> priceList = LinkedHashMap();
   late int noOfSteps;
   late int itemEquipped;
   int treat = 0;
@@ -41,12 +43,17 @@ class _HomeState extends State<Home> {
   late String fileName;
   late String path;
 
-
-
   @override
   initState() {
     fetchData();
     super.initState();
+    final token = FirebaseMessaging.instance.getToken().then((token) {
+      if (token == null) {
+        print('sadge');
+      } else {
+        print('Token: $token');
+      }
+    }).catchError((err) => print('Error: $err'));
     fetchDocData().whenComplete(() {
       setState(() {});
     });
@@ -57,12 +64,13 @@ class _HomeState extends State<Home> {
     return '$directory/pet.png';
   }
 
+
   Future screenshotFunc() async {
     final imageDirectory = await imagePath;
     //fileName = await DateTime.now().microsecondsSinceEpoch as String;
     fileName = 'pet.png';
-    await screenshotController.captureAndSave(imageDirectory, fileName: fileName);
-
+    await screenshotController.captureAndSave(imageDirectory,
+        fileName: fileName);
   }
 
   Future fetchDocData() async {
@@ -109,8 +117,6 @@ class _HomeState extends State<Home> {
                   });**/
 
                   screenshotFunc();
-
-
                 },
               ),
               IconButton(
@@ -185,8 +191,7 @@ class _HomeState extends State<Home> {
                 label: 'gallery'),
           ],
         ),
-        body: 
-        Screenshot(
+        body: Screenshot(
           controller: screenshotController,
           child: Stack(
             alignment: Alignment.bottomRight,
@@ -197,9 +202,16 @@ class _HomeState extends State<Home> {
                   IconButton(
                     alignment: Alignment.topLeft,
                     onPressed: () {},
-                    icon: Icon(Icons.cake_outlined, color: Colors.brown,),
+                    icon: Icon(
+                      Icons.cake_outlined,
+                      color: Colors.brown,
+                    ),
                   ),
-                  Text('Level ${treatsFed~/10}', style: TextStyle(fontSize: 20, color: Colors.brown, fontWeight: FontWeight.bold)),
+                  Text('Level ${treatsFed ~/ 10}',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.brown,
+                          fontWeight: FontWeight.bold)),
                 ],
               ),
               petImage(),
@@ -233,15 +245,15 @@ class _HomeState extends State<Home> {
                         setState(() {
                           treat--;
                           treatsFed++;
-
                         });
-                        docUser.update({'Treats': treat, 'TreatsFed': treatsFed,});
+                        docUser.update({
+                          'Treats': treat,
+                          'TreatsFed': treatsFed,
+                        });
                       }
-
                     },
                     child: Image.asset('assets/images/treat_bowl.png')),
               ),
-
             ],
           ),
         ),
@@ -259,8 +271,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget petImage() {
-
-    double padding = -0.4286*treatsFed + 80;
+    double padding = -0.4286 * treatsFed + 80;
     if (padding < 20) {
       padding = 20;
     }
@@ -270,7 +281,7 @@ class _HomeState extends State<Home> {
     return Container(
       padding: EdgeInsets.fromLTRB(padding, 60, padding, 50),
       child: Image.asset('assets/images/pet.png'),
-      );
+    );
   }
 
   Future fetchData() async {
@@ -344,7 +355,6 @@ class _HomeState extends State<Home> {
                 Text('Steps Taken: $noOfSteps/5000'),
                 TextButton(
                     onPressed: () {
-
                       if (noOfSteps >= 5000 && claimedReward == false) {
                         setState(() {
                           claimedReward = true;
