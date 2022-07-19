@@ -28,7 +28,7 @@ class Gallery extends StatefulWidget {
 
 class _GalleryState extends State<Gallery> {
   late User? user = widget.user;
-  List<String> priceList = ['','','',''];
+  List<String> priceList = ['', '', '', ''];
   HealthFactory health = HealthFactory();
   late int noOfSteps;
   int money = 0;
@@ -43,18 +43,19 @@ class _GalleryState extends State<Gallery> {
 
   Future fetchDocData() async {
     print(user.toString());
-    var userData = await FirebaseFirestore.instance.collection('users').doc(
-        user?.uid).get().then(
-            (doc) {
-          print(doc.data());
-          data = doc.data()!;
-          treat = data['Treats'];
-          money = data['Money'];
-          claimedReward = data['ClaimedReward'];
-          priceList = data['priceList'];
-          print(priceList);
-        }
-    );
+    var userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid)
+        .get()
+        .then((doc) {
+      print(doc.data());
+      data = doc.data()!;
+      treat = data['Treats'];
+      money = data['Money'];
+      claimedReward = data['ClaimedReward'];
+      priceList = data['priceList'];
+      print(priceList);
+    });
   }
 
   @override
@@ -64,11 +65,10 @@ class _GalleryState extends State<Gallery> {
     });
     super.initState();
 
-    fetchDocData().whenComplete((){
+    fetchDocData().whenComplete(() {
       setState(() {});
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -153,8 +153,8 @@ class _GalleryState extends State<Gallery> {
                     child: Column(children: <Widget>[
                       Expanded(
                         child: isImagePresent != false
-                        ? image
-                        : SizedBox(width: 30, height: 30),
+                            ? image
+                            : SizedBox(width: 30, height: 30),
                       ),
                     ])),
               ),
@@ -168,26 +168,27 @@ class _GalleryState extends State<Gallery> {
                         color: Colors.brown,
                         onPressed: () {}), **/
                     IconButton(
-                      alignment: Alignment.center,
-                      icon: Icon(Icons.save, size: 50),
-                      color: Colors.brown,
-                      onPressed: () async {
-                        final image = await screenshotController.capture();
+                        alignment: Alignment.center,
+                        icon: Icon(Icons.save, size: 50),
+                        color: Colors.brown,
+                        onPressed: () async {
+                          final image = await screenshotController.capture();
 
-                        await saveImage(image!);
-                      }
-                    ),
+                          await saveImage(image!)
+                              .whenComplete(() => AlertDialog(
+                                  title: Text('Saved Successfully!')))
+                              .catchError((error) =>
+                                  AlertDialog(title: Text('Error: $error')));
+                        }),
                     IconButton(
                         alignment: Alignment.center,
                         icon: Icon(Icons.share, size: 50),
                         color: Colors.brown,
                         onPressed: () async {
-                          final directory = (await getApplicationDocumentsDirectory ()).path;
+                          final directory =
+                              (await getApplicationDocumentsDirectory()).path;
                           String fileName = 'gallery.png';
                           final image = await screenshotController.capture();
-
-
-
                           shareFunc(image!);
                         }),
                     /**
@@ -200,7 +201,6 @@ class _GalleryState extends State<Gallery> {
           )),
     );
   }
-
 
   Future fetchStepData() async {
     int? steps;
@@ -239,7 +239,6 @@ class _GalleryState extends State<Gallery> {
                 Text('Steps Taken: $noOfSteps/5000'),
                 TextButton(
                     onPressed: () {
-
                       if (noOfSteps >= 5000 && claimedReward == false) {
                         setState(() {
                           claimedReward = true;
@@ -300,7 +299,6 @@ class _GalleryState extends State<Gallery> {
   }
 
   Future<String> saveImage(Uint8List bytes) async {
-
     await [Permission.storage].request();
     final fileName = 'growfit_${DateTime.now()}';
     final saved = await ImageGallerySaver.saveImage(bytes, name: fileName);

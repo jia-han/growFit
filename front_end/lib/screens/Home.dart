@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/main.dart';
 import 'package:intl/intl.dart';
@@ -25,8 +26,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late FirebaseMessaging messaging;
   late User? user = widget.user;
-  LinkedHashMap<String,dynamic> priceList = LinkedHashMap();
+  LinkedHashMap<String, dynamic> priceList = LinkedHashMap();
   late int noOfSteps;
   late int itemEquipped;
   int treat = 0;
@@ -41,12 +43,17 @@ class _HomeState extends State<Home> {
   late String fileName;
   late String path;
 
-
-
   @override
   initState() {
     fetchData();
     super.initState();
+    final token = FirebaseMessaging.instance.getToken().then((token) {
+      if (token == null) {
+        print('sadge');
+      } else {
+        print('Token: $token');
+      }
+    }).catchError((err) => print('Error: $err'));
     fetchDocData().whenComplete(() {
       setState(() {});
     });
@@ -57,12 +64,13 @@ class _HomeState extends State<Home> {
     return '$directory/pet.png';
   }
 
+
   Future screenshotFunc() async {
     final imageDirectory = await imagePath;
     //fileName = await DateTime.now().microsecondsSinceEpoch as String;
     fileName = 'pet.png';
-    await screenshotController.captureAndSave(imageDirectory, fileName: fileName);
-
+    await screenshotController.captureAndSave(imageDirectory,
+        fileName: fileName);
   }
 
   Future fetchDocData() async {
@@ -99,10 +107,16 @@ class _HomeState extends State<Home> {
               IconButton(
                 icon: Icon(Icons.screenshot),
                 onPressed: () {
+                  /**
+                  screenshotController
+                      .capture(delay: Duration(milliseconds: 10))
+                      .then((capturedImage) async {
+                    ShowCapturedWidget(context, capturedImage!);
+                  }).catchError((onError) {
+                    print(onError);
+                  });**/
 
                   screenshotFunc();
-
-
                 },
               ),
               IconButton(
@@ -147,7 +161,7 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-                ),
+                label: 'shop'),
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Icon(Icons.home, color: Colors.amber[800]),
@@ -160,7 +174,7 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-            ),
+                label: 'home'),
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Image.asset('assets/images/gallery_icon.png',
@@ -174,11 +188,10 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-            ),
+                label: 'gallery'),
           ],
         ),
-        body: 
-        Screenshot(
+        body: Screenshot(
           controller: screenshotController,
           child: Stack(
             alignment: Alignment.bottomRight,
@@ -189,9 +202,16 @@ class _HomeState extends State<Home> {
                   IconButton(
                     alignment: Alignment.topLeft,
                     onPressed: () {},
-                    icon: Icon(Icons.cake_outlined, color: Colors.brown,),
+                    icon: Icon(
+                      Icons.cake_outlined,
+                      color: Colors.brown,
+                    ),
                   ),
-                  Text('Level ${treatsFed~/10}', style: TextStyle(fontFamily: 'Pangolin', fontSize: 20, color: Colors.brown, fontWeight: FontWeight.bold)),
+                  Text('Level ${treatsFed ~/ 10}',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.brown,
+                          fontWeight: FontWeight.bold)),
                 ],
               ),
               petImage(),
@@ -225,15 +245,15 @@ class _HomeState extends State<Home> {
                         setState(() {
                           treat--;
                           treatsFed++;
-
                         });
-                        docUser.update({'Treats': treat, 'TreatsFed': treatsFed,});
+                        docUser.update({
+                          'Treats': treat,
+                          'TreatsFed': treatsFed,
+                        });
                       }
-
                     },
                     child: Image.asset('assets/images/treat_bowl.png')),
               ),
-
             ],
           ),
         ),
@@ -251,8 +271,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget petImage() {
-
-    double padding = -0.4286*treatsFed + 80;
+    double padding = -0.4286 * treatsFed + 80;
     if (padding < 20) {
       padding = 20;
     }
@@ -262,57 +281,45 @@ class _HomeState extends State<Home> {
     return Container(
       padding: EdgeInsets.fromLTRB(padding, 60, padding, 50),
       child: Image.asset('assets/images/pet.png'),
-      );
+    );
   }
 
   Future fetchData() async {
     final types = [
       HealthDataType.STEPS,
-      HealthDataType.MOVE_MINUTES,
-      HealthDataType.DISTANCE_DELTA,
     ];
 
     final permissions = [
       HealthDataAccess.READ,
-      HealthDataAccess.READ,
-      HealthDataAccess.READ,
     ];
 
     final now = DateTime.now();
-    //final yesterday = now.subtract(Duration(days: 1));
-    final midnight = DateTime(now.year, now.month, now.day);
+    final yesterday = now.subtract(Duration(days: 5));
     bool requested =
         await health.requestAuthorization(types, permissions: permissions);
     print('requested: $requested');
     await Permission.activityRecognition.request();
-    await Permission.location.request();
+
     if (requested) {
       try {
         List<HealthDataPoint> healthData =
-            await health.getHealthDataFromTypes(midnight, now, types);
-
+            await health.getHealthDataFromTypes(yesterday, now, types);
         _healthDataList.addAll((healthData.length < 100)
             ? healthData
             : healthData.sublist(0, 100));
-
       } catch (error) {
         print("Exception in getHealthDataFromTypes");
       }
     } else {
       print("Authorization not granted");
     }
-
-    _healthDataList = HealthFactory.removeDuplicates(_healthDataList);
     _healthDataList.forEach((x) {
       print("Data point: $x");
     });
-
-    // then i think i hv to go through each list if health data type is blabla then add into the variable
   }
 
   Future fetchStepData() async {
     int? steps;
-    int? move;
 
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day);
@@ -322,7 +329,6 @@ class _HomeState extends State<Home> {
     if (requested) {
       try {
         steps = await health.getTotalStepsInInterval(midnight, now);
-
       } catch (error) {
         print("Caught exception in getTotalStepsInInterval");
       }
@@ -349,7 +355,6 @@ class _HomeState extends State<Home> {
                 Text('Steps Taken: $noOfSteps/5000'),
                 TextButton(
                     onPressed: () {
-
                       if (noOfSteps >= 5000 && claimedReward == false) {
                         setState(() {
                           claimedReward = true;
@@ -388,3 +393,19 @@ signOut() async {
   );
 }
 
+Future<dynamic> ShowCapturedWidget(
+    BuildContext context, Uint8List capturedImage) {
+  return showDialog(
+    useSafeArea: false,
+    context: context,
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        title: Text("Captured widget screenshot"),
+      ),
+      body: Center(
+          child: capturedImage != null
+              ? Image.memory(capturedImage)
+              : Container()),
+    ),
+  );
+}
