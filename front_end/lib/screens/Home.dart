@@ -99,14 +99,6 @@ class _HomeState extends State<Home> {
               IconButton(
                 icon: Icon(Icons.screenshot),
                 onPressed: () {
-                  /**
-                  screenshotController
-                      .capture(delay: Duration(milliseconds: 10))
-                      .then((capturedImage) async {
-                    ShowCapturedWidget(context, capturedImage!);
-                  }).catchError((onError) {
-                    print(onError);
-                  });**/
 
                   screenshotFunc();
 
@@ -155,7 +147,7 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-                label: 'shop'),
+                ),
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Icon(Icons.home, color: Colors.amber[800]),
@@ -168,7 +160,7 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-                label: 'home'),
+            ),
             BottomNavigationBarItem(
                 icon: IconButton(
                   icon: Image.asset('assets/images/gallery_icon.png',
@@ -182,7 +174,7 @@ class _HomeState extends State<Home> {
                                 )));
                   },
                 ),
-                label: 'gallery'),
+            ),
           ],
         ),
         body: 
@@ -199,7 +191,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {},
                     icon: Icon(Icons.cake_outlined, color: Colors.brown,),
                   ),
-                  Text('Level ${treatsFed~/10}', style: TextStyle(fontSize: 20, color: Colors.brown, fontWeight: FontWeight.bold)),
+                  Text('Level ${treatsFed~/10}', style: TextStyle(fontFamily: 'Pangolin', fontSize: 20, color: Colors.brown, fontWeight: FontWeight.bold)),
                 ],
               ),
               petImage(),
@@ -276,39 +268,51 @@ class _HomeState extends State<Home> {
   Future fetchData() async {
     final types = [
       HealthDataType.STEPS,
+      HealthDataType.MOVE_MINUTES,
+      HealthDataType.DISTANCE_DELTA,
     ];
 
     final permissions = [
       HealthDataAccess.READ,
+      HealthDataAccess.READ,
+      HealthDataAccess.READ,
     ];
 
     final now = DateTime.now();
-    final yesterday = now.subtract(Duration(days: 5));
+    //final yesterday = now.subtract(Duration(days: 1));
+    final midnight = DateTime(now.year, now.month, now.day);
     bool requested =
         await health.requestAuthorization(types, permissions: permissions);
     print('requested: $requested');
     await Permission.activityRecognition.request();
-
+    await Permission.location.request();
     if (requested) {
       try {
         List<HealthDataPoint> healthData =
-            await health.getHealthDataFromTypes(yesterday, now, types);
+            await health.getHealthDataFromTypes(midnight, now, types);
+
         _healthDataList.addAll((healthData.length < 100)
             ? healthData
             : healthData.sublist(0, 100));
+
       } catch (error) {
         print("Exception in getHealthDataFromTypes");
       }
     } else {
       print("Authorization not granted");
     }
+
+    _healthDataList = HealthFactory.removeDuplicates(_healthDataList);
     _healthDataList.forEach((x) {
       print("Data point: $x");
     });
+
+    // then i think i hv to go through each list if health data type is blabla then add into the variable
   }
 
   Future fetchStepData() async {
     int? steps;
+    int? move;
 
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day);
@@ -318,6 +322,7 @@ class _HomeState extends State<Home> {
     if (requested) {
       try {
         steps = await health.getTotalStepsInInterval(midnight, now);
+
       } catch (error) {
         print("Caught exception in getTotalStepsInInterval");
       }
@@ -383,19 +388,3 @@ signOut() async {
   );
 }
 
-Future<dynamic> ShowCapturedWidget(
-    BuildContext context, Uint8List capturedImage) {
-  return showDialog(
-    useSafeArea: false,
-    context: context,
-    builder: (context) => Scaffold(
-      appBar: AppBar(
-        title: Text("Captured widget screenshot"),
-      ),
-      body: Center(
-          child: capturedImage != null
-              ? Image.memory(capturedImage)
-              : Container()),
-    ),
-  );
-}
