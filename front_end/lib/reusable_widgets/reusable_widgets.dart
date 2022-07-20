@@ -1,4 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/screens/Shop.dart';
+import 'package:front_end/screens/Home.dart';
+import 'package:front_end/screens/Gallery.dart';
+
+BottomNavigationBarItem shopButton(context, user) {
+  return BottomNavigationBarItem(
+                icon: IconButton(
+                  icon: Image.asset('assets/images/shop_icon.png',
+                      width: 24, height: 24),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Shop(
+                                  user: user,
+                                )));
+                  },
+                ),
+                label: 'shop');
+}
+
+BottomNavigationBarItem homeButton(context, user) {
+  return BottomNavigationBarItem(
+                icon: IconButton(
+                  icon: Icon(Icons.home, color: Colors.amber[800]),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Home(
+                                  user: user,
+                                )));
+                  },
+                ),
+                label: 'home');
+} 
+
+BottomNavigationBarItem galleryButton(context, user) {
+  return BottomNavigationBarItem(
+                icon: IconButton(
+                  icon: Image.asset('assets/images/gallery_icon.png',
+                      width: 24, height: 24),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Gallery(
+                                  user: user,
+                                )));
+                  },
+                ),
+                label: 'gallery');
+}
+
+
 
 TextField reusableTextField(String text, IconData icon, bool isPWType,
     TextEditingController controller) {

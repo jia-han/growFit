@@ -7,6 +7,8 @@ import 'package:front_end/screens/Gallery.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:front_end/reusable_widgets/reusable_widgets.dart';
+
 
 class Shop extends StatefulWidget {
   final User? user;
@@ -81,47 +83,9 @@ class _ShopState extends State<Shop> {
             ]),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  icon: Image.asset('assets/images/shop_icon.png',
-                      width: 24, height: 24),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Shop(
-                                  user: user,
-                                )));
-                  },
-                ),
-                label: 'shop'),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Home(
-                                  user: user,
-                                )));
-                  },
-                ),
-                label: 'home'),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  icon: Image.asset('assets/images/gallery_icon.png',
-                      width: 24, height: 24),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Gallery(
-                                  user: user,
-                                )));
-                  },
-                ),
-                label: 'gallery'),
+            shopButton(context, user),
+            homeButton(context, user),
+            galleryButton(context, user),
           ],
         ),
         body: Column(
