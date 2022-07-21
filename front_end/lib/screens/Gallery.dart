@@ -146,10 +146,12 @@ class _GalleryState extends State<Gallery> {
               Screenshot(
                 controller: screenshotController,
                 child: Container(
-                    //decoration: BoxDecoration(border: Border.all()),
+                    decoration: BoxDecoration(
+                        color: Colors.orange[200],
+                        border: Border.all(color: Colors.deepOrangeAccent.shade100,
+                        width: 3)),
                     height: 300,
                     width: 250,
-                    color: Colors.orange[200],
                     child: Column(children: <Widget>[
                       Expanded(
                         child: isImagePresent != false
@@ -157,6 +159,9 @@ class _GalleryState extends State<Gallery> {
                             : SizedBox(width: 30, height: 30),
                       ),
                     ])),
+              ),
+              SizedBox(
+                height: 30,
               ),
               Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -167,10 +172,15 @@ class _GalleryState extends State<Gallery> {
                         icon: Icon(Icons.arrow_left, size: 100),
                         color: Colors.brown,
                         onPressed: () {}), **/
-                    IconButton(
-                        alignment: Alignment.center,
-                        icon: Icon(Icons.save, size: 50),
-                        color: Colors.brown,
+                    TextButton(
+
+                        child: Text('Save to Gallery', style: TextStyle(fontFamily: 'Pangolin')),
+                        style: TextButton.styleFrom(
+                          primary: Colors.brown,
+                            backgroundColor: Colors.yellow[200],
+                            side: BorderSide(color: Colors.orangeAccent, width: 1.5),
+                            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))
+                        ),
                         onPressed: () async {
                           final image = await screenshotController.capture();
 
@@ -179,11 +189,21 @@ class _GalleryState extends State<Gallery> {
                                   title: Text('Saved Successfully!')))
                               .catchError((error) =>
                                   AlertDialog(title: Text('Error: $error')));
+
+                          await Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Image has been saved!'),
+                            )
+                          );
                         }),
-                    IconButton(
-                        alignment: Alignment.center,
-                        icon: Icon(Icons.share, size: 50),
-                        color: Colors.brown,
+                    TextButton(
+                        child: Text('Share to ...', style: TextStyle(fontFamily: 'Pangolin')),
+                        style: TextButton.styleFrom(
+                            primary: Colors.brown,
+                            backgroundColor: Colors.yellow[200],
+                            side: BorderSide(color: Colors.orangeAccent, width: 1.5),
+                            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))
+                        ),
                         onPressed: () async {
                           final directory =
                               (await getApplicationDocumentsDirectory()).path;
@@ -231,12 +251,16 @@ class _GalleryState extends State<Gallery> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: Colors.brown[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            ),
             title: Align(
                 alignment: Alignment.center,
-                child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
+                child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()), style: TextStyle(fontFamily: 'Pangolin'),),),
             content: Column(
               children: [
-                Text('Steps Taken: $noOfSteps/5000'),
+                Text('Steps Taken: $noOfSteps/5000', style: TextStyle(fontFamily: 'Pangolin') ),
                 TextButton(
                     onPressed: () {
                       if (noOfSteps >= 5000 && claimedReward == false) {
@@ -251,14 +275,13 @@ class _GalleryState extends State<Gallery> {
                         docUser.update({'Money': money, 'ClaimedReward': true});
                       }
                     },
-                    child: Text('Get Daily Reward')),
-                //Text('Time Exercised: ')
+                    child: Text('Get Daily Reward', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin'))),
               ],
               mainAxisSize: MainAxisSize.min,
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Back'),
+                child: Text('Back', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -306,3 +329,4 @@ class _GalleryState extends State<Gallery> {
     return saved['filePath'];
   }
 }
+
