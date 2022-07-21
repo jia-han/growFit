@@ -13,6 +13,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:front_end/reusable_widgets/reusable_widgets.dart';
+
 
 class Gallery extends StatefulWidget {
   final User? user;
@@ -97,47 +99,9 @@ class _GalleryState extends State<Gallery> {
               ]),
           bottomNavigationBar: BottomNavigationBar(
             items: [
-              BottomNavigationBarItem(
-                  icon: IconButton(
-                    icon: Image.asset('assets/images/shop_icon.png',
-                        width: 24, height: 24),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Shop(
-                                    user: user,
-                                  )));
-                    },
-                  ),
-                  label: 'shop'),
-              BottomNavigationBarItem(
-                  icon: IconButton(
-                    icon: Icon(Icons.home, color: Colors.amber[800]),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Home(
-                                    user: user,
-                                  )));
-                    },
-                  ),
-                  label: 'home'),
-              BottomNavigationBarItem(
-                  icon: IconButton(
-                    icon: Image.asset('assets/images/gallery_icon.png',
-                        width: 24, height: 24),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Gallery(
-                                    user: user,
-                                  )));
-                    },
-                  ),
-                  label: 'gallery'),
+            shopButton(context, user),
+            homeButton(context, user),
+            galleryButton(context, user),
             ],
           ),
           body: Center(

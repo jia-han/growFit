@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:front_end/reusable_widgets/reusable_widgets.dart';
 
 class Home extends StatefulWidget {
   final User? user;
@@ -63,7 +64,6 @@ class _HomeState extends State<Home> {
     final directory = (await getApplicationDocumentsDirectory()).path;
     return '$directory/pet.png';
   }
-
 
   Future screenshotFunc() async {
     final imageDirectory = await imagePath;
@@ -139,47 +139,9 @@ class _HomeState extends State<Home> {
             ]),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  icon: Image.asset('assets/images/shop_icon.png',
-                      width: 24, height: 24),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Shop(
-                                  user: user,
-                                )));
-                  },
-                ),
-                label: 'shop'),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  icon: Icon(Icons.home, color: Colors.amber[800]),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Home(
-                                  user: user,
-                                )));
-                  },
-                ),
-                label: 'home'),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  icon: Image.asset('assets/images/gallery_icon.png',
-                      width: 24, height: 24),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Gallery(
-                                  user: user,
-                                )));
-                  },
-                ),
-                label: 'gallery'),
+            shopButton(context, user),
+            homeButton(context, user),
+            galleryButton(context, user),
           ],
         ),
         body: Screenshot(
@@ -207,24 +169,7 @@ class _HomeState extends State<Home> {
                 ],
               ),
               petImage(),
-              if (ItemEquipped() == 1)
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  child: Image.asset('assets/images/baseball.png'),
-                  padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
-                ),
-              if (ItemEquipped() == 2)
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  child: Image.asset('assets/images/tennis_ball.png'),
-                  padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
-                ),
-              if (ItemEquipped() == 3)
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  child: Image.asset('assets/images/mouse_toy.png'),
-                  padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
-                ),
+              itemImage(),
               Container(
                 alignment: Alignment.bottomRight,
                 padding: EdgeInsets.fromLTRB(200, 250, 30, 50),
@@ -253,13 +198,31 @@ class _HomeState extends State<Home> {
     );
   }
 
-  int ItemEquipped() {
-    for (int k = 1; k < 4; k++) {
-      if (priceList['item$k'] == 'EQUIPPED') {
-        return k;
+  Container itemImage() {
+    int ItemEquipped() {
+      for (int k = 1; k < 4; k++) {
+        if (priceList['item$k'] == 'EQUIPPED') {
+          return k;
+        }
       }
+      return 0;
     }
-    return 0;
+    String getString() {
+      switch(ItemEquipped()) {
+        case 1:
+        return 'assets/images/baseball.png';
+        case 2:
+        return 'assets/images/tennis_ball.png';
+        case 3:
+        return 'assets/images/mouse_toy.png';
+      }
+      return '';
+    }
+    return Container(
+          alignment: Alignment.bottomLeft,
+          child: Image.asset(getString()),
+          padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
+        );;
   }
 
   Widget petImage() {
