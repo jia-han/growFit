@@ -29,7 +29,7 @@ class ForgotPasswordHome extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,),
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.yellow[200],
+        backgroundColor: Colors.amber[200],
         body: Container(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -39,8 +39,8 @@ class ForgotPasswordHome extends StatelessWidget {
                   Text(
                     'Reset Password',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40,
+                      fontFamily: 'Pangolin',
+                      fontSize: 50,
                     ),
                   ),
                   SizedBox(

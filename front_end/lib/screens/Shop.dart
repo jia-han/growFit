@@ -95,13 +95,19 @@ class _ShopState extends State<Shop> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                      height: 120,
-                      width: 120,
-                      color: Colors.amber[200],
+                      height: 130,
+                      width: 130,
+                      decoration: BoxDecoration(
+                          color: Colors.amber[200],
+                          border: Border.all(color: Colors.deepOrange.shade200, width: 3),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Column(children: <Widget>[
                         Expanded(
                             child: Image.asset('assets/images/treatbag.png')),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.amber,
+                          ),
                           onPressed: () {
                             if (money - 10 >= 0) {
                               setState(() {
@@ -121,24 +127,30 @@ class _ShopState extends State<Shop> {
                             });
 
                           },
-                          child: Text('10'),
+                          child: Text('10', style: TextStyle(fontFamily: 'Pangolin')),
                         )
                       ])),
                   Container(
-                      height: 120,
-                      width: 120,
-                      color: Colors.amber[200],
+                      height: 130,
+                      width: 130,
+                      decoration: BoxDecoration(
+                          color: Colors.amber[200],
+                          border: Border.all(color: Colors.deepOrange.shade200, width: 3),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Column(children: <Widget>[
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Image.asset('assets/images/ball_1.png'),
+                          child: Image.asset('assets/images/baseball.png'),
                         )),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.amber,
+                          ),
                           onPressed: () {
                             sellStuff(1);
                           },
-                          child: Text('${priceList['item1']}'),
+                          child: Text('${priceList['item1']}',style: TextStyle(fontFamily: 'Pangolin')),
                         ),
                       ]))
                 ]),
@@ -146,39 +158,51 @@ class _ShopState extends State<Shop> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                      height: 120,
-                      width: 120,
-                      color: Colors.amber[200],
+                      height: 130,
+                      width: 130,
+                      decoration: BoxDecoration(
+                          color: Colors.amber[200],
+                          border: Border.all(color: Colors.deepOrange.shade200, width: 3),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Column(children: <Widget>[
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Image.asset('assets/images/ball_2.png'),
+                          child: Image.asset('assets/images/tennis_ball.png'),
                         )),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.amber,
+                          ),
                           onPressed: () {
                             sellStuff(2);
                           },
-                          child: Text('${priceList['item2']}'),
+                          child: Text('${priceList['item2']}', style: TextStyle(fontFamily: 'Pangolin')),
                         ),
                       ])),
                   Container(
-                      height: 120,
-                      width: 120,
-                      color: Colors.amber[200],
+                      height: 130,
+                      width: 130,
+                      decoration: BoxDecoration(
+                          color: Colors.amber[200],
+                          border: Border.all(color: Colors.deepOrange.shade200, width: 3),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Column(
                           //crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             Expanded(
                                 child: Padding(
                               padding: const EdgeInsets.all(20.0),
-                              child: Image.asset('assets/images/ball_3.png'),
+                              child: Image.asset('assets/images/mouse_toy.png'),
                             )),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.amber,
+                              ),
                               onPressed: () {
                                 sellStuff(3);
                               },
-                              child: Text('${priceList['item3']}'),
+                              child: Text('${priceList['item3']}', style: TextStyle(fontFamily: 'Pangolin')),
                             ),
                           ]))
                 ]),
@@ -282,40 +306,37 @@ class _ShopState extends State<Shop> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: Colors.brown[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            ),
             title: Align(
-                alignment: Alignment.center,
-                child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
+              alignment: Alignment.center,
+              child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()), style: TextStyle(fontFamily: 'Pangolin'),),),
             content: Column(
               children: [
-                Text('Steps Taken: $noOfSteps/300'),
+                Text('Steps Taken: $noOfSteps/5000', style: TextStyle(fontFamily: 'Pangolin') ),
                 TextButton(
                     onPressed: () {
-
-                      if (noOfSteps >= 300 && claimedReward == false) {
+                      if (noOfSteps >= 5000 && claimedReward == false) {
                         setState(() {
                           claimedReward = true;
                           money = money + 50;
-
                         });
                         var docUser = FirebaseFirestore.instance
                             .collection('users')
                             .doc(user?.uid);
 
-                        docUser.update({  
-                          'Money' : money,
-                          'ClaimedReward' : true 
-                        });
+                        docUser.update({'Money': money, 'ClaimedReward': true});
                       }
-
                     },
-                    child: Text('Get Daily Reward')),
-                //Text('Time Exercised: ')
+                    child: Text('Get Daily Reward', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin'))),
               ],
               mainAxisSize: MainAxisSize.min,
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Back'),
+                child: Text('Back', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
