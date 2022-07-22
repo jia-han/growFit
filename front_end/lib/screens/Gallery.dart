@@ -101,18 +101,23 @@ class _GalleryState extends State<Gallery> {
             child: Column(children: <Widget>[
               SizedBox(height: 100),
               Screenshot(
-                controller: screenshotController,
-                child: SizedBox(
-                    height: 400,
+                  controller: screenshotController,
+                  child: Container(
                     child: PageView.builder(
                       controller: PageController(initialPage: 1),
                       itemBuilder: (context, index) {
-                        return Image.file(images.elementAt(index).listSync().elementAt(0));
-                        
+                        return Image.file(
+                            images.elementAt(index).listSync().elementAt(0));
                       },
                       itemCount: images.length,
-                    )),
-              ),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.orange[200],
+                        border: Border.all(
+                            color: Colors.deepOrangeAccent.shade100, width: 3)),
+                    height: MediaQuery.of(context).size.height/2,
+                    width: MediaQuery.of(context).size.width/1.5,
+                  )),
               SizedBox(
                 height: 30,
               ),
@@ -120,19 +125,17 @@ class _GalleryState extends State<Gallery> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.arrow_left, size: 100),
-                        color: Colors.brown,
-                        onPressed: () {}),
                     TextButton(
-
-                        child: Text('Save to Gallery', style: TextStyle(fontFamily: 'Pangolin')),
+                        child: Text('Save to Gallery',
+                            style: TextStyle(fontFamily: 'Pangolin')),
                         style: TextButton.styleFrom(
-                          primary: Colors.brown,
+                            primary: Colors.brown,
                             backgroundColor: Colors.yellow[200],
-                            side: BorderSide(color: Colors.orangeAccent, width: 1.5),
-                            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))
-                        ),
+                            side: BorderSide(
+                                color: Colors.orangeAccent, width: 1.5),
+                            shape: const BeveledRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)))),
                         onPressed: () async {
                           final image = await screenshotController.capture();
                           await saveImage(image!)
@@ -141,20 +144,21 @@ class _GalleryState extends State<Gallery> {
                               .catchError((error) =>
                                   AlertDialog(title: Text('Error: $error')));
 
-                          await Scaffold.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Image has been saved!'),
-                            )
-                          );
+                          await Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text('Image has been saved!'),
+                          ));
                         }),
                     TextButton(
-                        child: Text('Share to ...', style: TextStyle(fontFamily: 'Pangolin')),
+                        child: Text('Share to ...',
+                            style: TextStyle(fontFamily: 'Pangolin')),
                         style: TextButton.styleFrom(
                             primary: Colors.brown,
                             backgroundColor: Colors.yellow[200],
-                            side: BorderSide(color: Colors.orangeAccent, width: 1.5),
-                            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))
-                        ),
+                            side: BorderSide(
+                                color: Colors.orangeAccent, width: 1.5),
+                            shape: const BeveledRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)))),
                         onPressed: () async {
                           final directory =
                               (await getApplicationDocumentsDirectory()).path;
@@ -162,10 +166,6 @@ class _GalleryState extends State<Gallery> {
                           final image = await screenshotController.capture();
                           shareFunc(image!);
                         }),
-                    IconButton(
-                        icon: Icon(Icons.arrow_right, size: 100),
-                        color: Colors.brown,
-                        onPressed: () {}),
                   ])
             ]),
           )),
@@ -206,11 +206,16 @@ class _GalleryState extends State<Gallery> {
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
             ),
             title: Align(
-                alignment: Alignment.center,
-                child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()), style: TextStyle(fontFamily: 'Pangolin'),),),
+              alignment: Alignment.center,
+              child: Text(
+                DateFormat('EEE, M/d/y').format(DateTime.now()),
+                style: TextStyle(fontFamily: 'Pangolin'),
+              ),
+            ),
             content: Column(
               children: [
-                Text('Steps Taken: $noOfSteps/5000', style: TextStyle(fontFamily: 'Pangolin') ),
+                Text('Steps Taken: $noOfSteps/5000',
+                    style: TextStyle(fontFamily: 'Pangolin')),
                 TextButton(
                     onPressed: () {
                       if (noOfSteps >= 5000 && claimedReward == false) {
@@ -225,13 +230,17 @@ class _GalleryState extends State<Gallery> {
                         docUser.update({'Money': money, 'ClaimedReward': true});
                       }
                     },
-                    child: Text('Get Daily Reward', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin'))),
+                    child: Text('Get Daily Reward',
+                        style: TextStyle(
+                            color: Colors.deepOrange, fontFamily: 'Pangolin'))),
               ],
               mainAxisSize: MainAxisSize.min,
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Back', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
+                child: Text('Back',
+                    style: TextStyle(
+                        color: Colors.deepOrange, fontFamily: 'Pangolin')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -250,9 +259,11 @@ class _GalleryState extends State<Gallery> {
   void _loadImage() async {
     final path = await imagePath;
     setState(() {
-      images = io.Directory(path).listSync().where((element) =>
-        element is io.Directory
-      ).skip(1).toList();
+      images = io.Directory(path)
+          .listSync()
+          .where((element) => element is io.Directory)
+          .skip(1)
+          .toList();
     });
     images.forEach((element) {
       List list = element.listSync();
@@ -275,4 +286,3 @@ class _GalleryState extends State<Gallery> {
     return saved['filePath'];
   }
 }
-
