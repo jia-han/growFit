@@ -62,13 +62,14 @@ class _HomeState extends State<Home> {
 
   Future<String> get imagePath async {
     final directory = (await getApplicationDocumentsDirectory()).path;
-    return '$directory/pet.png';
+    return directory;
   }
 
   Future screenshotFunc() async {
     final imageDirectory = await imagePath;
+    print(imageDirectory);
     //fileName = await DateTime.now().microsecondsSinceEpoch as String;
-    fileName = 'pet.png';
+    fileName = '${DateTime.now()} pet.png';
     await screenshotController.captureAndSave(imageDirectory,
         fileName: fileName);
   }
@@ -186,7 +187,7 @@ class _HomeState extends State<Home> {
                       var docUser = FirebaseFirestore.instance
                           .collection('users')
                           .doc(user?.uid);
-                      if (treat >= 0) {
+                      if (treat > 0) {
                         setState(() {
                           treat--;
                           treatsFed++;

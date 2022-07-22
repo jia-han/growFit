@@ -1,10 +1,8 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:front_end/screens/Shop.dart';
-import 'package:front_end/screens/Home.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,7 +12,6 @@ import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:front_end/reusable_widgets/reusable_widgets.dart';
-
 
 class Gallery extends StatefulWidget {
   final User? user;
@@ -34,7 +31,7 @@ class _GalleryState extends State<Gallery> {
   HealthFactory health = HealthFactory();
   late int noOfSteps;
   int money = 0;
-  late Image image;
+  List images = [];
   int treat = 0;
   bool claimedReward = true;
   int treatsFed = 0;
@@ -62,11 +59,8 @@ class _GalleryState extends State<Gallery> {
 
   @override
   initState() {
-    _loadImage().whenComplete(() {
-      setState(() {});
-    });
     super.initState();
-
+    _loadImage();
     fetchDocData().whenComplete(() {
       setState(() {});
     });
@@ -74,7 +68,6 @@ class _GalleryState extends State<Gallery> {
 
   @override
   Widget build(BuildContext context) {
-    _loadImage();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -99,9 +92,9 @@ class _GalleryState extends State<Gallery> {
               ]),
           bottomNavigationBar: BottomNavigationBar(
             items: [
-            shopButton(context, user),
-            homeButton(context, user),
-            galleryButton(context, user),
+              shopButton(context, user),
+              homeButton(context, user),
+              galleryButton(context, user),
             ],
           ),
           body: Center(
@@ -109,35 +102,31 @@ class _GalleryState extends State<Gallery> {
               SizedBox(height: 100),
               Screenshot(
                 controller: screenshotController,
-                child: Container(
-                    //decoration: BoxDecoration(border: Border.all()),
-                    height: 300,
-                    width: 250,
-                    color: Colors.orange[200],
-                    child: Column(children: <Widget>[
-                      Expanded(
-                        child: isImagePresent != false
-                            ? image
-                            : SizedBox(width: 30, height: 30),
-                      ),
-                    ])),
+                child: SizedBox(
+                    height: 400,
+                    child: PageView.builder(
+                      controller: PageController(initialPage: 1),
+                      itemBuilder: (context, index) {
+                        return Image.file(images.elementAt(index).listSync().elementAt(0));
+                        
+                      },
+                      itemCount: images.length,
+                    )),
               ),
               Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    /**
                     IconButton(
                         icon: Icon(Icons.arrow_left, size: 100),
                         color: Colors.brown,
-                        onPressed: () {}), **/
+                        onPressed: () {}),
                     IconButton(
                         alignment: Alignment.center,
                         icon: Icon(Icons.save, size: 50),
                         color: Colors.brown,
                         onPressed: () async {
                           final image = await screenshotController.capture();
-
                           await saveImage(image!)
                               .whenComplete(() => AlertDialog(
                                   title: Text('Saved Successfully!')))
@@ -155,11 +144,10 @@ class _GalleryState extends State<Gallery> {
                           final image = await screenshotController.capture();
                           shareFunc(image!);
                         }),
-                    /**
                     IconButton(
                         icon: Icon(Icons.arrow_right, size: 100),
                         color: Colors.brown,
-                        onPressed: () {}), **/
+                        onPressed: () {}),
                   ])
             ]),
           )),
@@ -234,29 +222,26 @@ class _GalleryState extends State<Gallery> {
 
   Future<String> get imagePath async {
     final directory = (await getApplicationDocumentsDirectory()).path;
-    return '$directory/pet.png';
+    //print(directory);
+    return directory;
   }
 
-  Future<void> _loadImage() async {
+  void _loadImage() async {
     final path = await imagePath;
-    final _doesTheImageExist = File('${path}/pet.png').existsSync();
-    //print(_doesTheImageExist);
-    if (_doesTheImageExist == true) {
-      setState(() {
-        image = Image.file(File("${path}/pet.png"));
-        isImagePresent = true;
-      });
-    } else {
-      setState(() {
-        //image = null;
-        isImagePresent = false;
-      });
-    }
+    setState(() {
+      images = io.Directory(path).listSync().where((element) =>
+        element is io.Directory
+      ).skip(1).toList();
+    });
+    images.forEach((element) {
+      List list = element.listSync();
+      print('element: $element element type: ${element.runtimeType}');
+    });
   }
 
   Future shareFunc(Uint8List bytes) async {
     final directory = await getApplicationDocumentsDirectory();
-    final image = File('${directory.path}/gallery.png');
+    final image = io.File('${directory.path}/gallery.png');
     image.writeAsBytes(bytes);
 
     await Share.shareFiles([image.path]);
@@ -266,7 +251,6 @@ class _GalleryState extends State<Gallery> {
     await [Permission.storage].request();
     final fileName = 'growfit_${DateTime.now()}';
     final saved = await ImageGallerySaver.saveImage(bytes, name: fileName);
-
     return saved['filePath'];
   }
 }
