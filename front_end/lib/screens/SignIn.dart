@@ -24,7 +24,7 @@ class SignInHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.yellow[200],
+        backgroundColor: Colors.amber[200],
         body: Container(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -34,8 +34,8 @@ class SignInHome extends StatelessWidget {
                 Text(
                   'Sign In',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 40,
+                    fontFamily: 'Pangolin',
+                    fontSize: 50,
                   ),
                 ),
                 SizedBox(

@@ -106,21 +106,6 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.brown,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.screenshot),
-                onPressed: () {
-                  /**
-                  screenshotController
-                      .capture(delay: Duration(milliseconds: 10))
-                      .then((capturedImage) async {
-                    ShowCapturedWidget(context, capturedImage!);
-                  }).catchError((onError) {
-                    print(onError);
-                  });**/
-
-                  screenshotFunc();
-                },
-              ),
-              IconButton(
                 icon: Icon(Icons.power_settings_new),
                 onPressed: () {
                   showDialog(
@@ -136,6 +121,12 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ));
+                },
+              ),
+              IconButton(
+                icon: Image.asset('assets/images/screenshot.png'),
+                onPressed: () {
+                  screenshotFunc();
                 },
               ),
               IconButton(
@@ -172,6 +163,7 @@ class _HomeState extends State<Home> {
                   ),
                   Text('Level ${treatsFed ~/ 10}',
                       style: TextStyle(
+                          fontFamily: 'Pangolin',
                           fontSize: 20,
                           color: Colors.brown,
                           fontWeight: FontWeight.bold)),
@@ -219,11 +211,11 @@ class _HomeState extends State<Home> {
     String getString() {
       switch(ItemEquipped()) {
         case 1:
-        return 'assets/images/ball_1.png';
+        return 'assets/images/baseball.png';
         case 2:
-        return 'assets/images/ball_2.png';
+        return 'assets/images/tennis_ball.png';
         case 3:
-        return 'assets/images/ball_3.png';
+        return 'assets/images/mouse_toy.png';
       }
       return '';
     }
@@ -311,12 +303,16 @@ class _HomeState extends State<Home> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: Colors.brown[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            ),
             title: Align(
-                alignment: Alignment.center,
-                child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()))),
+              alignment: Alignment.center,
+              child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()), style: TextStyle(fontFamily: 'Pangolin'),),),
             content: Column(
               children: [
-                Text('Steps Taken: $noOfSteps/5000'),
+                Text('Steps Taken: $noOfSteps/5000', style: TextStyle(fontFamily: 'Pangolin') ),
                 TextButton(
                     onPressed: () {
                       if (noOfSteps >= 5000 && claimedReward == false) {
@@ -331,14 +327,13 @@ class _HomeState extends State<Home> {
                         docUser.update({'Money': money, 'ClaimedReward': true});
                       }
                     },
-                    child: Text('Get Daily Reward')),
-                //Text('Time Exercised: ')
+                    child: Text('Get Daily Reward', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin'))),
               ],
               mainAxisSize: MainAxisSize.min,
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Back'),
+                child: Text('Back', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
