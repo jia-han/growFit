@@ -104,10 +104,10 @@ class _GalleryState extends State<Gallery> {
                   controller: screenshotController,
                   child: Container(
                     child: PageView.builder(
-                      controller: PageController(initialPage: 1),
+                      controller: PageController(initialPage: 0),
                       itemBuilder: (context, index) {
                         return Image.file(
-                            images.elementAt(index).listSync().elementAt(0));
+                            images.elementAt(index));
                       },
                       itemCount: images.length,
                     ),
@@ -258,15 +258,14 @@ class _GalleryState extends State<Gallery> {
 
   void _loadImage() async {
     final path = await imagePath;
+    print(path);
     setState(() {
       images = io.Directory(path)
           .listSync()
-          .where((element) => element is io.Directory)
-          .skip(1)
+          .where((element) => element is io.File && element.path.endsWith('pet.png'))
           .toList();
     });
     images.forEach((element) {
-      List list = element.listSync();
       print('element: $element element type: ${element.runtimeType}');
     });
   }
