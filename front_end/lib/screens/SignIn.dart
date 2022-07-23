@@ -4,21 +4,37 @@ import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/SignUp.dart';
 import 'package:front_end/reusable_widgets/reusable_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
+  const SignIn({Key? key}) : super(key: key);
+
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(debugShowCheckedModeBanner:false, home: SignInHome());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: SignInHome());
   }
 }
 
-class SignInHome extends StatelessWidget {
+class SignInHome extends StatefulWidget {
   SignInHome({Key? key}) : super(key: key);
 
+  @override
+  State<SignInHome> createState() => _SignInHomeState();
+}
+
+class _SignInHomeState extends State<SignInHome> {
   TextEditingController emailCtrl = TextEditingController();
+
   TextEditingController pwCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +47,24 @@ class SignInHome extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(
+                const Text(
                   'Sign In',
                   style: TextStyle(
                     fontFamily: 'Pangolin',
                     fontSize: 50,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 60,
                 ),
                 reusableTextField(
                     'Enter Email', Icons.email_outlined, false, emailCtrl),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 reusableTextField(
                     'Enter Password', Icons.lock_outline, true, pwCtrl),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextButton(
@@ -58,8 +74,8 @@ class SignInHome extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => ForgotPassword()));
                     },
-                    child: Text('Forgot password?')),
-                SizedBox(
+                    child: const Text('Forgot password?')),
+                const SizedBox(
                   height: 20,
                 ),
                 signInSignUpButton(context, true, () {
@@ -68,26 +84,18 @@ class SignInHome extends StatelessWidget {
                           email: emailCtrl.text, password: pwCtrl.text)
                       .then((value) {
                     User? user = value.user;
-                    FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(user?.uid)
-                        .get()
-                        .then(
-                      (doc) {                        
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Home(
-                                    user: user,
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Home(
+                                  user: user,
                                 )));
-                      },
-                    );
                   }).onError((error, stackTrace) {
-                    print('Error ${error.toString()}');
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${error}')));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('Error: $error')));
                   });
                 }),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 createAcc(context, SignUp()),

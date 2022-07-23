@@ -5,19 +5,38 @@ import 'package:front_end/screens/Home.dart';
 import 'package:front_end/screens/SignIn.dart';
 import 'package:front_end/reusable_widgets/reusable_widgets.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner:false, home: SignUpHome());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: SignUpHome());
   }
 }
 
-class SignUpHome extends StatelessWidget {
+class SignUpHome extends StatefulWidget {
   SignUpHome({Key? key}) : super(key: key);
 
+  @override
+  State<SignUpHome> createState() => _SignUpHomeState();
+}
+
+class _SignUpHomeState extends State<SignUpHome> {
   TextEditingController usernameCtrl = TextEditingController();
+
   TextEditingController emailCtrl = TextEditingController();
+
   TextEditingController pwCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,25 +49,25 @@ class SignUpHome extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     'Sign Up',
                     style: TextStyle(
                       fontFamily: 'Pangolin',
                       fontSize: 50,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 60,
                   ),
                   Column(children: [
                     reusableTextField(
                         'Enter Email', Icons.email_outlined, false, emailCtrl),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     reusableTextField(
                         'Enter Password', Icons.lock_outlined, true, pwCtrl),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     signInSignUpButton(context, false, () {
@@ -68,23 +87,29 @@ class SignUpHome extends StatelessWidget {
                             'Treats': 0,
                             'ClaimedReward': false,
                             'TreatsFed': 0,
-                            'priceList' : {'item1' : '250','item2' : '250','item3' : '250' }
+                            'priceList': {
+                              'item1': '250',
+                              'item2': '250',
+                              'item3': '250'
+                            }
                           });
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Home(user: user,
+                                  builder: (context) => Home(
+                                        user: user,
                                       )));
                         },
                       ).onError((error, stackTrace) {
-                        print('Error ${error.toString()}');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: $error')));
                       });
                     }),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Text('Already have an account?'),
+                      const Text('Already have an account?'),
                       TextButton(
                         onPressed: () {
                           Navigator.pushReplacement(
@@ -92,7 +117,7 @@ class SignUpHome extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => SignIn()));
                         },
-                        child: Text('Sign in'),
+                        child: const Text('Sign in'),
                       )
                     ])
                   ]),

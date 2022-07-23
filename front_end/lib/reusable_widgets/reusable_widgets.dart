@@ -90,14 +90,6 @@ Container signInSignUpButton(BuildContext context, bool isLogIn, Function onTap)
           onPressed: () {
             onTap();
           },
-          child: Text(
-            isLogIn ? 'LOG IN' : 'SIGN UP',
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith((states) {
                 if (states.contains(MaterialState.pressed)) {
@@ -107,18 +99,26 @@ Container signInSignUpButton(BuildContext context, bool isLogIn, Function onTap)
               }),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30))))));
+                      borderRadius: BorderRadius.circular(30)))),
+          child: Text(
+            isLogIn ? 'LOG IN' : 'SIGN UP',
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          )));
 }
 
 Row createAcc(BuildContext context, Widget screen) {
   return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-    Text('No account yet?'),
+    const Text('No account yet?'),
     TextButton(
       onPressed: () {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => screen));
       },
-      child: Text('Create an account'),
+      child: const Text('Create an account'),
     )
   ]);
 }

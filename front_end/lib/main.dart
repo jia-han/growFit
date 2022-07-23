@@ -1,15 +1,10 @@
-//import 'dart:html';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:front_end/screens/Shop.dart';
 import 'firebase_options.dart';
 import 'package:front_end/screens/Home.dart';
-import 'package:front_end/screens/ForgotPassword.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:front_end/screens/SignIn.dart';
 
@@ -31,17 +26,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const providerConfigs = [EmailProviderConfiguration()];
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: authGate(),
+      home: AuthGate(),
     );
   }
 }
 
-class authGate extends StatelessWidget {
-  authGate({Key? key}) : super(key: key);
+class AuthGate extends StatelessWidget {
+  AuthGate({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,24 +45,12 @@ class authGate extends StatelessWidget {
           return SignIn();
         } else {
           User? user = snapshot.data;
-          FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user?.uid)
-                              .get()
-                              .then(
-                            (doc) {
-                              Map<String,dynamic> data = doc.data()!;
-                              return Home(user: user,);
-                            },
-                          );
-                          return SignIn();
+          return Home(user: user,);
         }
       });
   }
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {
-  print('message received!');
   FirebaseMessaging.onMessageOpenedApp.listen((message) {return main();});
-
 }
