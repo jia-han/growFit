@@ -60,7 +60,8 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter_icons:
-  image_path: "assets/images/GrowFit.png"
+  image_path: "assets/images/Growfit.png"
+  image_path_android: "assets/images/Growfit.png"
   android: true
 
 
