@@ -5,8 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/main.dart';
 import 'package:intl/intl.dart';
-import 'package:front_end/screens/Shop.dart';
-import 'package:front_end/screens/Gallery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:health/health.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,23 +36,14 @@ class _HomeState extends State<Home> {
   int treatsFed = 0;
   List<HealthDataPoint> _healthDataList = [];
   HealthFactory health = HealthFactory();
-  Map<String, dynamic> data = Map();
+  Map<String, dynamic> data = {};
   ScreenshotController screenshotController = ScreenshotController();
-  late Uint8List _imageFile;
   late String fileName;
   late String path;
 
   @override
   initState() {
-    fetchData();
     super.initState();
-    final token = FirebaseMessaging.instance.getToken().then((token) {
-      if (token == null) {
-        print('sadge');
-      } else {
-        print('Token: $token');
-      }
-    }).catchError((err) => print('Error: $err'));
     fetchDocData().whenComplete(() {
       setState(() {});
     });
@@ -67,20 +56,17 @@ class _HomeState extends State<Home> {
 
   Future screenshotFunc() async {
     final imageDirectory = await imagePath;
-    print(imageDirectory);
-    //fileName = await DateTime.now().microsecondsSinceEpoch as String;
     fileName = '${DateTime.now()} pet.png';
     await screenshotController.captureAndSave(imageDirectory,
         fileName: fileName);
   }
 
   Future fetchDocData() async {
-    var userData = await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(user?.uid)
         .get()
         .then((doc) {
-      print(doc.data());
       data = doc.data()!;
       treat = data['Treats'];
       money = data['Money'];
@@ -106,22 +92,29 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.brown,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.power_settings_new),
+                icon: const Icon(Icons.power_settings_new),
                 onPressed: () {
                   showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                             backgroundColor: Colors.brown[100],
-                            shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(32.0)),
                             ),
-                            title: Text('Sign out?', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
+                            title: const Text('Sign out?',
+                                style: TextStyle(
+                                    color: Colors.deepOrange,
+                                    fontFamily: 'Pangolin')),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   signOut();
                                 },
-                                child: Text('Sign Out', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
+                                child: const Text('Sign Out',
+                                    style: TextStyle(
+                                        color: Colors.deepOrange,
+                                        fontFamily: 'Pangolin')),
                               ),
                             ],
                           ));
@@ -160,13 +153,13 @@ class _HomeState extends State<Home> {
                   IconButton(
                     alignment: Alignment.topLeft,
                     onPressed: () {},
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.cake_outlined,
                       color: Colors.brown,
                     ),
                   ),
                   Text('Level ${treatsFed ~/ 10}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: 'Pangolin',
                           fontSize: 20,
                           color: Colors.brown,
@@ -177,7 +170,7 @@ class _HomeState extends State<Home> {
               itemImage(),
               Container(
                 alignment: Alignment.bottomRight,
-                padding: EdgeInsets.fromLTRB(200, 250, 30, 50),
+                padding: const EdgeInsets.fromLTRB(200, 250, 30, 50),
                 child: TextButton(
                     onPressed: () {
                       var docUser = FirebaseFirestore.instance
@@ -204,7 +197,7 @@ class _HomeState extends State<Home> {
   }
 
   Container itemImage() {
-    int ItemEquipped() {
+    int itemEquipped() {
       for (int k = 1; k < 4; k++) {
         if (priceList['item$k'] == 'EQUIPPED') {
           return k;
@@ -212,22 +205,30 @@ class _HomeState extends State<Home> {
       }
       return 0;
     }
+
     String getString() {
-      switch(ItemEquipped()) {
+      switch (itemEquipped()) {
         case 1:
-        return 'assets/images/baseball.png';
+          return 'assets/images/baseball.png';
         case 2:
-        return 'assets/images/tennis_ball.png';
+          return 'assets/images/tennis_ball.png';
         case 3:
-        return 'assets/images/mouse_toy.png';
+          return 'assets/images/mouse_toy.png';
       }
       return '';
     }
+    Widget image(string) {
+        if (string == '') {
+          return const SizedBox();
+        } else {
+          return Image.asset(string);
+        }
+    }
     return Container(
-          alignment: Alignment.bottomLeft,
-          child: Image.asset(getString()),
-          padding: EdgeInsets.fromLTRB(45, 250, 275, 60),
-        );;
+      alignment: Alignment.bottomLeft,
+      padding: const EdgeInsets.fromLTRB(45, 250, 275, 60),
+      child: image(getString()),
+    );
   }
 
   Widget petImage() {
@@ -254,10 +255,9 @@ class _HomeState extends State<Home> {
     ];
 
     final now = DateTime.now();
-    final yesterday = now.subtract(Duration(days: 5));
+    final yesterday = now.subtract(const Duration(days: 5));
     bool requested =
         await health.requestAuthorization(types, permissions: permissions);
-    print('requested: $requested');
     await Permission.activityRecognition.request();
 
     if (requested) {
@@ -268,14 +268,13 @@ class _HomeState extends State<Home> {
             ? healthData
             : healthData.sublist(0, 100));
       } catch (error) {
-        print("Exception in getHealthDataFromTypes");
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error in getting health data')));
       }
     } else {
-      print("Authorization not granted");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Authorization not granted')));
     }
-    _healthDataList.forEach((x) {
-      print("Data point: $x");
-    });
   }
 
   Future fetchStepData() async {
@@ -290,15 +289,16 @@ class _HomeState extends State<Home> {
       try {
         steps = await health.getTotalStepsInInterval(midnight, now);
       } catch (error) {
-        print("Caught exception in getTotalStepsInInterval");
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error in getting number of steps')));
       }
-      print('Total number of steps: $steps');
 
       setState(() {
         noOfSteps = (steps == null) ? 0 : steps;
       });
     } else {
-      print("Authorization not granted");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Authorization not granted')));
     }
   }
 
@@ -308,15 +308,21 @@ class _HomeState extends State<Home> {
         builder: (context) {
           return AlertDialog(
             backgroundColor: Colors.brown[100],
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
             ),
             title: Align(
               alignment: Alignment.center,
-              child: Text(DateFormat('EEE, M/d/y').format(DateTime.now()), style: TextStyle(fontFamily: 'Pangolin'),),),
+              child: Text(
+                DateFormat('EEE, M/d/y').format(DateTime.now()),
+                style: const TextStyle(fontFamily: 'Pangolin'),
+              ),
+            ),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Steps Taken: $noOfSteps/5000', style: TextStyle(fontFamily: 'Pangolin') ),
+                Text('Steps Taken: $noOfSteps/5000',
+                    style: const TextStyle(fontFamily: 'Pangolin')),
                 TextButton(
                     onPressed: () {
                       if (noOfSteps >= 5000 && claimedReward == false) {
@@ -331,13 +337,16 @@ class _HomeState extends State<Home> {
                         docUser.update({'Money': money, 'ClaimedReward': true});
                       }
                     },
-                    child: Text('Get Daily Reward', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin'))),
+                    child: const Text('Get Daily Reward',
+                        style: TextStyle(
+                            color: Colors.deepOrange, fontFamily: 'Pangolin'))),
               ],
-              mainAxisSize: MainAxisSize.min,
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Back', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
+                child: const Text('Back',
+                    style: TextStyle(
+                        color: Colors.deepOrange, fontFamily: 'Pangolin')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -351,24 +360,21 @@ class _HomeState extends State<Home> {
 signOut() async {
   await FirebaseAuth.instance.signOut().then(
     (value) {
-      runApp(new MaterialApp(home: new MyApp()));
+      runApp(MyApp());
     },
   );
 }
 
-Future<dynamic> ShowCapturedWidget(
+Future<dynamic> showCapturedWidget(
     BuildContext context, Uint8List capturedImage) {
   return showDialog(
     useSafeArea: false,
     context: context,
     builder: (context) => Scaffold(
       appBar: AppBar(
-        title: Text("Captured widget screenshot"),
+        title: const Text("Captured widget screenshot"),
       ),
-      body: Center(
-          child: capturedImage != null
-              ? Image.memory(capturedImage)
-              : Container()),
+      body: Center(child: Image.memory(capturedImage)),
     ),
   );
 }

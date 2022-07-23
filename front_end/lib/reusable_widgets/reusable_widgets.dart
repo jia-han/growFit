@@ -122,3 +122,8 @@ Row createAcc(BuildContext context, Widget screen) {
     )
   ]);
 }
+
+Future errorSnackBar(error,context) async{
+  ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('Error: $error')));
+}

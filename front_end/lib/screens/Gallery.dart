@@ -1,4 +1,4 @@
-import 'dart:io' as io;
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -35,25 +35,21 @@ class _GalleryState extends State<Gallery> {
   int treat = 0;
   bool claimedReward = true;
   int treatsFed = 0;
-  List<HealthDataPoint> _healthDataList = [];
-  Map<String, dynamic> data = Map();
+  Map<String, dynamic> data = {};
   bool isImagePresent = false;
   ScreenshotController screenshotController = ScreenshotController();
 
   Future fetchDocData() async {
-    print(user.toString());
-    var userData = await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(user?.uid)
         .get()
         .then((doc) {
-      print(doc.data());
       data = doc.data()!;
       treat = data['Treats'];
       money = data['Money'];
       claimedReward = data['ClaimedReward'];
       priceList = data['priceList'];
-      print(priceList);
     });
   }
 
@@ -99,26 +95,25 @@ class _GalleryState extends State<Gallery> {
           ),
           body: Center(
             child: Column(children: <Widget>[
-              SizedBox(height: 100),
+              const SizedBox(height: 100),
               Screenshot(
                   controller: screenshotController,
                   child: Container(
-                    child: PageView.builder(
-                      controller: PageController(initialPage: 0),
-                      itemBuilder: (context, index) {
-                        return Image.file(
-                            images.elementAt(index));
-                      },
-                      itemCount: images.length,
-                    ),
                     decoration: BoxDecoration(
                         color: Colors.orange[200],
                         border: Border.all(
                             color: Colors.deepOrangeAccent.shade100, width: 3)),
-                    height: MediaQuery.of(context).size.height/2,
-                    width: MediaQuery.of(context).size.width/1.5,
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: PageView.builder(
+                      controller: PageController(initialPage: 0),
+                      itemBuilder: (context, index) {
+                        return Image.file(images.elementAt(index));
+                      },
+                      itemCount: images.length,
+                    ),
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Row(
@@ -126,46 +121,35 @@ class _GalleryState extends State<Gallery> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     TextButton(
-                        child: Text('Save to Gallery',
-                            style: TextStyle(fontFamily: 'Pangolin')),
                         style: TextButton.styleFrom(
                             primary: Colors.brown,
                             backgroundColor: Colors.yellow[200],
-                            side: BorderSide(
+                            side: const BorderSide(
                                 color: Colors.orangeAccent, width: 1.5),
                             shape: const BeveledRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)))),
                         onPressed: () async {
                           final image = await screenshotController.capture();
-                          await saveImage(image!)
-                              .whenComplete(() => AlertDialog(
-                                  title: Text('Saved Successfully!')))
-                              .catchError((error) =>
-                                  AlertDialog(title: Text('Error: $error')));
-
-                          await Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('Image has been saved!'),
-                          ));
-                        }),
+                          await saveImage(image!);
+                        },
+                        child: const Text('Save to Gallery',
+                            style: TextStyle(fontFamily: 'Pangolin'))),
                     TextButton(
-                        child: Text('Share to ...',
-                            style: TextStyle(fontFamily: 'Pangolin')),
                         style: TextButton.styleFrom(
                             primary: Colors.brown,
                             backgroundColor: Colors.yellow[200],
-                            side: BorderSide(
+                            side: const BorderSide(
                                 color: Colors.orangeAccent, width: 1.5),
                             shape: const BeveledRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)))),
                         onPressed: () async {
-                          final directory =
-                              (await getApplicationDocumentsDirectory()).path;
-                          String fileName = 'gallery.png';
                           final image = await screenshotController.capture();
                           shareFunc(image!);
-                        }),
+                        },
+                        child: const Text('Share to ...',
+                            style: TextStyle(fontFamily: 'Pangolin'))),
                   ])
             ]),
           )),
@@ -184,15 +168,16 @@ class _GalleryState extends State<Gallery> {
       try {
         steps = await health.getTotalStepsInInterval(midnight, now);
       } catch (error) {
-        print("Caught exception in getTotalStepsInInterval");
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error in getting number of steps')));
       }
-      print('Total number of steps: $steps');
 
       setState(() {
         noOfSteps = (steps == null) ? 0 : steps;
       });
     } else {
-      print("Authorization not granted");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Authorization not granted')));
     }
   }
 
@@ -202,20 +187,21 @@ class _GalleryState extends State<Gallery> {
         builder: (context) {
           return AlertDialog(
             backgroundColor: Colors.brown[100],
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
             ),
             title: Align(
               alignment: Alignment.center,
               child: Text(
                 DateFormat('EEE, M/d/y').format(DateTime.now()),
-                style: TextStyle(fontFamily: 'Pangolin'),
+                style: const TextStyle(fontFamily: 'Pangolin'),
               ),
             ),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text('Steps Taken: $noOfSteps/5000',
-                    style: TextStyle(fontFamily: 'Pangolin')),
+                    style: const TextStyle(fontFamily: 'Pangolin')),
                 TextButton(
                     onPressed: () {
                       if (noOfSteps >= 5000 && claimedReward == false) {
@@ -230,15 +216,14 @@ class _GalleryState extends State<Gallery> {
                         docUser.update({'Money': money, 'ClaimedReward': true});
                       }
                     },
-                    child: Text('Get Daily Reward',
+                    child: const Text('Get Daily Reward',
                         style: TextStyle(
                             color: Colors.deepOrange, fontFamily: 'Pangolin'))),
               ],
-              mainAxisSize: MainAxisSize.min,
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Back',
+                child: const Text('Back',
                     style: TextStyle(
                         color: Colors.deepOrange, fontFamily: 'Pangolin')),
                 onPressed: () {
@@ -258,21 +243,18 @@ class _GalleryState extends State<Gallery> {
 
   void _loadImage() async {
     final path = await imagePath;
-    print(path);
     setState(() {
-      images = io.Directory(path)
+      images = Directory(path)
           .listSync()
-          .where((element) => element is io.File && element.path.endsWith('pet.png'))
+          .where(
+              (element) => element is File && element.path.endsWith('pet.png'))
           .toList();
-    });
-    images.forEach((element) {
-      print('element: $element element type: ${element.runtimeType}');
     });
   }
 
   Future shareFunc(Uint8List bytes) async {
     final directory = await getApplicationDocumentsDirectory();
-    final image = io.File('${directory.path}/gallery.png');
+    final image = File('${directory.path}/gallery.png');
     image.writeAsBytes(bytes);
 
     await Share.shareFiles([image.path]);
