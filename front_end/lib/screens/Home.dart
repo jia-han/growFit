@@ -111,13 +111,17 @@ class _HomeState extends State<Home> {
                   showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                            title: Text('Sign out?'),
+                            backgroundColor: Colors.brown[100],
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                            ),
+                            title: Text('Sign out?', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
                             actions: [
-                              ElevatedButton(
+                              TextButton(
                                 onPressed: () {
                                   signOut();
                                 },
-                                child: Text('Sign Out'),
+                                child: Text('Sign Out', style: TextStyle(color: Colors.deepOrange,fontFamily: 'Pangolin')),
                               ),
                             ],
                           ));
