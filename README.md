@@ -5,7 +5,7 @@
 
 ## Proposed Level of Achievement:
 
-Project Gemini
+Apollo 11
 
 ## Motivation:
 
