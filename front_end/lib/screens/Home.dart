@@ -365,16 +365,3 @@ signOut() async {
   );
 }
 
-Future<dynamic> showCapturedWidget(
-    BuildContext context, Uint8List capturedImage) {
-  return showDialog(
-    useSafeArea: false,
-    context: context,
-    builder: (context) => Scaffold(
-      appBar: AppBar(
-        title: const Text("Captured widget screenshot"),
-      ),
-      body: Center(child: Image.memory(capturedImage)),
-    ),
-  );
-}
